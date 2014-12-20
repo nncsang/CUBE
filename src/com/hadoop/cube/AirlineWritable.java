@@ -20,10 +20,10 @@ public class AirlineWritable implements WritableComparable<AirlineWritable> {
         fields = f;
     }
     
-    public AirlineWritable(int month, int dayOfMonth, int dayOfWeek, int flightNumber, int origin, int dest) {
-        fields[0] = month;
-        fields[1] = dayOfMonth;
-        fields[2] = dayOfWeek;
+    public AirlineWritable(int year, int month, int dayOfMonth, int flightNumber, int origin, int dest) {
+        fields[0] = year;
+        fields[1] = month;
+        fields[2] = dayOfMonth;
         fields[3] = flightNumber;
         fields[4] = origin;
         fields[5] = dest;
@@ -33,13 +33,13 @@ public class AirlineWritable implements WritableComparable<AirlineWritable> {
         fields = f;
     }
     
-    public void set(int month, int dayOfMonth, int dayOfWeek, int flightNumber, int origin, int dest) {
-    	fields[0] = month;
-        fields[1] = dayOfMonth;
-        fields[2] = dayOfWeek;
-        fields[3] = flightNumber;
-        fields[4] = origin;
-        fields[5] = dest;
+    public void set(int year, int month, int dayOfMonth, int flightNumber, int origin, int dest) {
+    	  fields[0] = year;
+          fields[1] = month;
+          fields[2] = dayOfMonth;
+          fields[3] = flightNumber;
+          fields[4] = origin;
+          fields[5] = dest;
     }
 
     @Override
