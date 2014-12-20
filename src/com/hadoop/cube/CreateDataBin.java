@@ -83,8 +83,12 @@ public class CreateDataBin {
 			
 			br.close();
 			fstream.close();
+				
+			if (current == limit && limit != -1)
+            	break;
 	    }
         
+		
 		IOUtils.closeStream(writer);
 		
 		System.out.println("");
