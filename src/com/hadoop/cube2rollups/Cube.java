@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.StringUtils;
-
 
 public class Cube {
 	private Set<Region> cubeRegions;
@@ -74,7 +72,12 @@ public class Cube {
 		int nRegion = (int) Math.pow(2, this.numDim);
 		for(int i = 0; i < nRegion; i++){
 			String binary = Integer.toBinaryString(i);
-			binary = StringUtils.repeat("0", this.numDim - binary.length()) + binary;
+			
+			int repeatTimes = this.numDim - binary.length();
+			String temp = "";
+			for(int j = 0; j < repeatTimes; j++)
+				temp += "0";
+			binary = temp + binary;
 			
 			List<String> region = new ArrayList<String>();
 			for(int j = 0; j < binary.length(); j++){
