@@ -1,0 +1,239 @@
+y,m,d,h,mm,s	true	true
+s,y,m,d,h,mm	true	true
+mm,s,y,m,d,h	true	true
+h,mm,s,y,m,d	true	true
+d,mm,h,s,y,m	true	true
+m,h,mm,d,s,y	true	true
+d,s,y,h,m,mm	true	true
+m,mm,y,d,h,s	true	true
+h,y,m,mm,d,s	true	true
+d,m,s,h,y,mm	true	true
+d,mm,y,h,m,s	true	true
+s,m,h,y,d,mm	true	true
+d,h,y,m,mm,s	true	false
+mm,s,m,d,y,h	true	true
+d,mm,s,y,m,h	true	true
+h,s,y,m,d,mm	true	false
+d,m,h,y,mm,s	true	false
+mm,y,h,m,d,s	true	false
+d,y,m,h,mm,s	true	false
+m,mm,d,y,h,s	true	false
+h,s,m,mm,y,d	false	true
+d,h,s,y,m,mm	true	false
+
+
+0
+y,m,d,h,mm,s
+*,*,*,*,*,*
+y,*,*,*,*,*
+y,m,*,*,*,*
+y,m,d,*,*,*
+y,m,d,h,*,*
+y,m,d,h,mm,*
+y,m,d,h,mm,s
+true	true
+0	1	2	3	4	5	6	
+
+
+
+1
+s,y,m,d,h,mm
+s,*,*,*,*,*
+s,y,*,*,*,*
+s,y,m,*,*,*
+s,y,m,d,*,*
+s,y,m,d,h,*
+true	true
+1	2	3	4	5	
+
+
+
+2
+mm,s,y,m,d,h
+mm,*,*,*,*,*
+mm,s,*,*,*,*
+mm,s,y,*,*,*
+mm,s,y,m,*,*
+mm,s,y,m,d,*
+true	true
+1	2	3	4	5	
+
+
+
+3
+h,mm,s,y,m,d
+h,*,*,*,*,*
+h,mm,*,*,*,*
+h,mm,s,*,*,*
+h,mm,s,y,*,*
+h,mm,s,y,m,*
+true	true
+1	2	3	4	5	
+
+
+
+4
+d,mm,h,s,y,m
+d,*,*,*,*,*
+d,mm,*,*,*,*
+d,mm,h,*,*,*
+d,mm,h,s,*,*
+d,mm,h,s,y,*
+true	true
+1	2	3	4	5	
+
+
+
+5
+m,h,mm,d,s,y
+m,*,*,*,*,*
+m,h,*,*,*,*
+m,h,mm,*,*,*
+m,h,mm,d,*,*
+m,h,mm,d,s,*
+true	true
+1	2	3	4	5	
+
+
+
+6
+d,s,y,h,m,mm
+d,s,*,*,*,*
+d,s,y,*,*,*
+d,s,y,h,*,*
+true	true
+2	3	4	
+
+
+
+7
+m,mm,y,d,h,s
+m,mm,*,*,*,*
+m,mm,y,*,*,*
+m,mm,y,d,*,*
+true	true
+2	3	4	
+
+
+
+8
+h,y,m,mm,d,s
+h,y,*,*,*,*
+h,y,m,*,*,*
+h,y,m,mm,*,*
+true	true
+2	3	4	
+
+
+
+9
+d,m,s,h,y,mm
+d,m,*,*,*,*
+d,m,s,*,*,*
+d,m,s,h,*,*
+true	true
+2	3	4	
+
+
+
+10
+d,mm,y,h,m,s
+d,mm,y,*,*,*
+d,mm,y,h,*,*
+true	true
+3	4	
+
+
+
+11
+s,m,h,y,d,mm
+s,m,*,*,*,*
+s,m,h,*,*,*
+s,m,h,y,*,*
+true	true
+2	3	4	
+
+
+
+12
+d,h,y,m,mm,s
+d,h,*,*,*,*
+d,h,y,*,*,*
+true	false
+2	3	
+
+
+
+13
+mm,s,m,d,y,h
+mm,s,m,*,*,*
+mm,s,m,d,*,*
+true	true
+3	4	
+
+
+
+14
+d,mm,s,y,m,h
+d,mm,s,*,*,*
+d,mm,s,y,*,*
+true	true
+3	4	
+
+
+
+15
+h,s,y,m,d,mm
+h,s,*,*,*,*
+h,s,y,*,*,*
+true	false
+2	3	
+
+
+
+16
+d,m,h,y,mm,s
+d,m,h,*,*,*
+true	false
+3	
+
+
+
+17
+mm,y,h,m,d,s
+mm,y,*,*,*,*
+mm,y,h,*,*,*
+true	false
+2	3	
+
+
+
+18
+d,y,m,h,mm,s
+d,y,*,*,*,*
+true	false
+2	
+
+
+
+19
+m,mm,d,y,h,s
+m,mm,d,*,*,*
+true	false
+3	
+
+
+
+20
+h,s,m,mm,y,d
+h,s,m,mm,*,*
+false	true
+4	
+
+
+
+21
+d,h,s,y,m,mm
+d,h,s,*,*,*
+true	false
+3	
