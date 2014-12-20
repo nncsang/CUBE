@@ -92,6 +92,7 @@ public class CreateDataBin {
 		IOUtils.closeStream(writer);
 		
 		System.out.println("");
+		System.out.println("Total written tupples: " + current);
 		System.out.println("Done");
 	}
 
