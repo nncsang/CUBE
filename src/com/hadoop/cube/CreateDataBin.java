@@ -74,7 +74,7 @@ public class CreateDataBin {
 		            
 		            current++;
 		            if (current % 1000 == 0){
-		            	System.out.println("Num of written tupples: " + current);
+		            	System.out.println("Num of written tuples: " + current);
 		            }
 		            
 		            if (current == limit && limit != -1)
@@ -97,7 +97,7 @@ public class CreateDataBin {
 		IOUtils.closeStream(writer);
 		
 		System.out.println("");
-		System.out.println("Total written tupples: " + current);
+		System.out.println("Total written tuples: " + current);
 		System.out.println("Done");
 	}
 

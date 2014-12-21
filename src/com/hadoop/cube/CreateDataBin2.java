@@ -19,6 +19,7 @@ import com.hadoop.cube.AirlineWritable;
 public class CreateDataBin2 {
 
 	public static void main(String[] args) throws IOException {
+		
 		if (args.length != 2 && args.length != 3){
 			System.out.println("Usage: <input> <output>");
 			return;
@@ -72,8 +73,8 @@ public class CreateDataBin2 {
 		            writer.append(key, value);
 		            
 		            current++;
-		            if (current % 1000 == 0){
-		            	System.out.println("Num of written tupples: " + current);
+		            if (current % 1000000 == 0){
+		            	System.out.println("Num of written tuples: " + current);
 		            }
 		            
 		            if (current == limit && limit != -1)
@@ -96,7 +97,7 @@ public class CreateDataBin2 {
 		IOUtils.closeStream(writer);
 		
 		System.out.println("");
-		System.out.println("Total written tupples: " + current);
+		System.out.println("Total written tuples: " + current);
 		System.out.println("Done");
 	}
 
