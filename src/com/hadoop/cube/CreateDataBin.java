@@ -19,6 +19,11 @@ import com.hadoop.cube.AirlineWritable;
 public class CreateDataBin {
 
 	public static void main(String[] args) throws IOException {
+		if (args.length != 2 && args.length != 3){
+			System.out.println("Usage: <input> <output>");
+			return;
+		}
+		
 		String[] input = args[0].split(",");
 		String output = args[1];
 		int limit;
