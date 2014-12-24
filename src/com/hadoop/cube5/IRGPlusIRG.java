@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube5;
 
 
 import java.io.IOException;
@@ -22,8 +22,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import com.hadoop.cube.AirlineWritable;
-import com.hadoop.cube2rollups.Checker;
+import com.hadoop.cube.TimeStampWritable;
+import com.hadoop.cube5.Checker;
 import com.hadoop.cube2rollups.Cube;
 import com.hadoop.cube2rollups.GlobalSettings;
 import com.hadoop.cube2rollups.HeuristicBasedConverter;
@@ -64,7 +64,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 
 		// set map class and the map output key and value classes
 		job.setMapperClass(IRGPlusIRGMapper.class);
-		job.setMapOutputKeyClass(TupleWritable.class);
+		job.setMapOutputKeyClass(TupleWritable5.class);
 		job.setMapOutputValueClass(LongWritable.class);
 		
 		job.setPartitionerClass(IRGPlusIRGPartitioner.class);
@@ -76,7 +76,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 		//job.setSortComparatorClass(TimestampWritable.Comparator.class);
 
 		// set job output format
-		job.setOutputKeyClass(AirlineWritable.class);
+		job.setOutputKeyClass(TimeStampWritable.class);
 		job.setOutputValueClass(LongWritable.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		
@@ -107,7 +107,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 		Random tmp = new Random();
         int choosen = (tmp.nextInt() & Integer.MAX_VALUE);
 		
-		String[] attributes = {"1", "2", "3", "4", "5", "6"};
+		String[] attributes = {"1", "2", "3", "4", "5"};
 		Cube cube = new Cube(attributes);
 		List<RollUp> rollups = cube.toRollUps(new HeuristicBasedConverter(), pivot);
 		

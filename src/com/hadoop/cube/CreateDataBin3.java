@@ -56,7 +56,7 @@ public class CreateDataBin3 {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 			
 			while ((strLine = br.readLine()) != null)   {
-				String[] attributes = strLine.split("\t");
+				String[] attributes = strLine.split(",");
 				
 		        try{
 		        	int year = Integer.parseInt(attributes[0]);
