@@ -1,6 +1,5 @@
 package com.hadoop.cube.irg_plus_irg;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -9,11 +8,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -21,7 +16,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import com.hadoop.cube.data_structure.Cube;
+import com.hadoop.cube.data_structure.CubeLattice;
 import com.hadoop.cube.data_structure.HeuristicBasedConverter;
 import com.hadoop.cube.data_structure.RollUp;
 import com.hadoop.cube.data_writable.Segment;
@@ -114,7 +109,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 			attributes[i] = Integer.toString(i);
 		Tuple.setLength(tupleLength);
 		
-		Cube cube = new Cube(attributes);
+		CubeLattice cube = new CubeLattice(attributes);
 		List<RollUp> rollups = cube.toRollUps(new HeuristicBasedConverter(), pivot);
 		
 		String rollupList = "";

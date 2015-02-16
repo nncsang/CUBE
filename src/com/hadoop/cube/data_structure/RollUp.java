@@ -12,7 +12,7 @@ import com.hadoop.cube.utils.Utils;
 
 public class RollUp {
 	private String[] attributes;
-	public List<Region> rollupRegions;
+	public List<Cuboid> rollupRegions;
 	private int numDim;
 	public List<Integer> enabledRegions;
 	public boolean[] isNeedEmitTuple = {true, true};
@@ -28,8 +28,8 @@ public class RollUp {
 		return this.attributes;
 	}
 	
-	List<Region> rollupRegions(){
-		this.rollupRegions = new ArrayList<Region>();
+	List<Cuboid> rollupRegions(){
+		this.rollupRegions = new ArrayList<Cuboid>();
 		
 		for(int i = 0; i < this.numDim; i++){
 			List<String> region = new ArrayList<String>();
@@ -40,15 +40,15 @@ public class RollUp {
 			for(int j = i; j < this.numDim; j++)
 				region.add(GlobalSettings.ALL);
 			
-			this.rollupRegions.add((new Region(region.toArray(new String[region.size()]))));
+			this.rollupRegions.add((new Cuboid(region.toArray(new String[region.size()]))));
 		}
 		
-		this.rollupRegions.add((new Region(this.attributes)));
+		this.rollupRegions.add((new Cuboid(this.attributes)));
 		return this.rollupRegions;
 	}
 	
 	public void printRegions(){
-		Iterator<Region> iter = this.rollupRegions.iterator();
+		Iterator<Cuboid> iter = this.rollupRegions.iterator();
 		while(iter.hasNext()){
 			System.out.println(iter.next().toString());
 		}

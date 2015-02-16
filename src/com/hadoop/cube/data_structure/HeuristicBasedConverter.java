@@ -11,11 +11,11 @@ import java.util.Set;
 import com.hadoop.cube.settings.GlobalSettings;
 
 public class HeuristicBasedConverter implements CubeConverter{
-	Set<Region> cubeRegions;
+	List<Cuboid> cubeRegions;
 	
 	RollUp rollup;
 	List<RollUp> rollupList;
-	List<Region> rollupRegions;
+	List<Cuboid> rollupRegions;
 	
 	String[] attributes;
 	Map<String, Integer> result;
@@ -101,7 +101,7 @@ public class HeuristicBasedConverter implements CubeConverter{
 		this.pivot = pivot;
 		this.attributes = attributes;
 		
-		this.cubeRegions = new Cube(attributes).cubeRegions();
+		this.cubeRegions = new CubeLattice(attributes).cuboids();
 		this.rollup = new RollUp(attributes);
 		this.rollupRegions = this.rollup.rollupRegions();
 		
@@ -115,7 +115,7 @@ public class HeuristicBasedConverter implements CubeConverter{
 		}
 		
 		for(int i = 0; i < this.rollupRegions.size(); i++){
-			Region region = this.rollupRegions.get(i);
+			Cuboid region = this.rollupRegions.get(i);
 			if (checkAndRemoveRegion(region)){
 				this.rollup.enabledRegions.add(i);
 				if (i <= pivot){
@@ -129,7 +129,7 @@ public class HeuristicBasedConverter implements CubeConverter{
 		this.rollupList.add(this.rollup);
 	}
 	
-	public boolean checkAndRemoveRegion(Region regionToRemove){
+	public boolean checkAndRemoveRegion(Cuboid regionToRemove){
 		Map<String, Integer> map1 = new HashMap<String, Integer>();
 		Map<String, Integer> map2 = new HashMap<String, Integer>();
 		
@@ -143,9 +143,9 @@ public class HeuristicBasedConverter implements CubeConverter{
 			map1.put(attributes1[i], map1.get(attributes1[i]) + 1);
 		}
 		
-		Iterator<Region> iter = this.cubeRegions.iterator();
+		Iterator<Cuboid> iter = this.cubeRegions.iterator();
 		while(iter.hasNext()){
-			Region region = iter.next();
+			Cuboid region = iter.next();
 			
 			String[] attributes2 = region.getAttributes();
 			
@@ -168,7 +168,7 @@ public class HeuristicBasedConverter implements CubeConverter{
 	
 	Map<String, Integer> frequencies(){
 		this.resetFrequencyMap();
-		Iterator<Region> iter = this.cubeRegions.iterator();
+		Iterator<Cuboid> iter = this.cubeRegions.iterator();
 		
 		while(iter.hasNext()){
 			String[] attributes = iter.next().getAttributes();
@@ -185,7 +185,7 @@ public class HeuristicBasedConverter implements CubeConverter{
 	Map<String, Integer> frequenciesByPrefix(List<String> prefix){
 		this.resetFrequencyMap();
 		
-		Iterator<Region> iter = this.cubeRegions.iterator();
+		Iterator<Cuboid> iter = this.cubeRegions.iterator();
 		
 		this.prefixSet = new HashSet<String>();
 		for(int i = 0; i < prefix.size(); i++)
@@ -237,7 +237,7 @@ public class HeuristicBasedConverter implements CubeConverter{
 	}
 
 	@Override
-	public List<RollUp> toRollUps(String[] attributes, Set<Region> regions,
+	public List<RollUp> toRollUps(String[] attributes, List<Cuboid> regions,
 			int pivot) {
 		this.pivot = pivot;
 		this.attributes = attributes;

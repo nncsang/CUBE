@@ -27,8 +27,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import com.hadoop.cube.data_structure.Cube;
-import com.hadoop.cube.data_structure.Region;
+import com.hadoop.cube.data_structure.CubeLattice;
+import com.hadoop.cube.data_structure.Cuboid;
 import com.hadoop.cube.data_writable.Tuple;
 import com.hadoop.cube.irg_plus_irg.HashPartitioner;
 import com.hadoop.cube.old_data_writable.AirlineWritable;
@@ -68,12 +68,11 @@ public class NaiveMRCube extends Configured implements Tool {
 			attributes[i] = Integer.toString(i);
 		Tuple.setLength(tupleLength);
 		
-		Cube cube = new Cube(attributes);
-		Set<Region> regions = cube.cubeRegions();
-		Iterator<Region> iter = regions.iterator();
+		CubeLattice cube = new CubeLattice(attributes);
+		List<Cuboid> cuboids = cube.cuboids();
 		String regionList = "";
-		while(iter.hasNext()){
-			String region = iter.next().toString();
+		for(int i = 0; i < cuboids.size(); i++){
+			String region = cuboids.get(i).toString();
 			regionList = regionList + region + GlobalSettings.DELIM_BETWEEN_CONTENTS_OF_TUPLE;
 		}
 		
@@ -129,17 +128,17 @@ public class NaiveMRCube extends Configured implements Tool {
 }
 
 class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>{
-	private List<Region> regions;
+	private List<Cuboid> regions;
 	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		Configuration conf = context.getConfiguration();
 		String[] regionListString = conf.get("regionList").split(GlobalSettings.DELIM_BETWEEN_CONTENTS_OF_TUPLE);
 		
-		this.regions = new ArrayList<Region>();
+		this.regions = new ArrayList<Cuboid>();
 		
 		for(int i = 0; i < regionListString.length; i++){
-			regions.add(new Region(regionListString[i].split(GlobalSettings.DELIM_BETWEEN_ATTRIBUTES)));
+			regions.add(new Cuboid(regionListString[i].split(GlobalSettings.DELIM_BETWEEN_ATTRIBUTES)));
 		}
 	}
 	
@@ -149,7 +148,7 @@ class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>
 		
 		int size = regions.size();
 		for(int i = 0; i < size; i++){
-			Region region = regions.get(i);
+			Cuboid region = regions.get(i);
 			String[] attributes = region.getAttributes();
 			int length = attributes.length;
 			

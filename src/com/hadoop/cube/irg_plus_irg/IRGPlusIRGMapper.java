@@ -12,7 +12,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
-import com.hadoop.cube.data_structure.Region;
+import com.hadoop.cube.data_structure.Cuboid;
 import com.hadoop.cube.data_structure.RollUp;
 import com.hadoop.cube.settings.GlobalSettings;
 import com.hadoop.cube.utils.Utils;

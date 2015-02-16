@@ -5,5 +5,5 @@ import java.util.Set;
 
 public interface CubeConverter {
 	List<RollUp> toRollUps(String[] attributes, int pivot);
-	List<RollUp> toRollUps(String[] attributes, Set<Region> regions, int pivot);
+	List<RollUp> toRollUps(String[] attributes, List<Cuboid> regions, int pivot);
 }
