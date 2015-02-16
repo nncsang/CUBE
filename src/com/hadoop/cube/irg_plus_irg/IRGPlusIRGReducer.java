@@ -12,19 +12,19 @@ import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import com.hadoop.cube.AirlineWritable;
-import com.hadoop.cube.TupleWritable;
 import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.data_writable.Tuple;
+import com.hadoop.cube.data_writable.Segment;
 import com.hadoop.cube.settings.GlobalSettings;
 
-public class IRGPlusIRGReducer extends Reducer<TupleWritable,
+public class IRGPlusIRGReducer extends Reducer<Segment,
 											LongWritable, 
-											AirlineWritable, 
+											Tuple, 
 											LongWritable> { 
 
-	protected AirlineWritable previousKey;
+	protected Tuple previousKey;
 	protected long[] tmpRes;
-	protected AirlineWritable previousKey2;
+	protected Tuple previousKey2;
 	protected long[] tmpRes2;
 	protected int pivot;
 	protected boolean secondPass;
@@ -53,18 +53,18 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 	
 	private LongWritable tmpLW;
 	
-	private AirlineWritable official;
+	private Tuple official;
 	
 	public IRGPlusIRGReducer() {
 		previousKey = null;
-		tmpRes = new long[AirlineWritable.length];
+		tmpRes = new long[Tuple.length];
 		previousKey2 = null;
-		tmpRes2 = new long[AirlineWritable.length];
+		tmpRes2 = new long[Tuple.length];
 		secondPass = false;
 		
 		this.currentAttributePosition = new HashMap<String, Integer>();
 		this.tmpLW = new LongWritable();
-		this.official = new AirlineWritable();
+		this.official = new Tuple();
 	}
 	
 	@Override
@@ -102,18 +102,18 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 	}
 	
 	public void reset(){
-		
-		previousKey = new AirlineWritable(null);
-		previousKey2 = new AirlineWritable(null);
-		for (int i = 0; i < AirlineWritable.length; i++) {
+
+		previousKey = new Tuple(null);
+		previousKey2 = new Tuple(null);
+		for (int i = 0; i < Tuple.length; i++) {
 		    tmpRes[i] = 0;
 		    tmpRes2[i] = 0;
-		    
 		}
+		
 		secondPass = false;
 	}
 	
-	protected void new_compute(AirlineWritable key, LongWritable value, Context context)
+	protected void new_compute(Tuple key, LongWritable value, Context context)
 		    throws IOException, InterruptedException {
 			
 			if (previousKey.fields != null) {
@@ -125,7 +125,7 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 			    			tmpRes[j] += tmpRes[j + 1];
 			    			tmpVal.set(tmpRes[j + 1]);
 			    			tmpRes[j + 1] = 0;
-			    			previousKey.fields[j + 1] = AirlineWritable.NullValue;
+			    			previousKey.fields[j + 1] = Tuple.NullValue;
 			    			writeResult(context, previousKey, tmpVal);
 			    		}
 			    		break;
@@ -133,20 +133,20 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 			    }
 			}
 			
-			if (key.fields[0] != AirlineWritable.NullValue) {
+			if (key.fields[0] != Tuple.NullValue) {
 				
-				if (lastRightIndex == AirlineWritable.length - 1)
+				if (lastRightIndex == Tuple.length - 1)
 					context.write(key, value);
 				
-				for(int i = AirlineWritable.length - 1; i >= lastRightGroupingIndex; i--)
-					key.fields[i] = AirlineWritable.NullValue;
+				for(int i = Tuple.length - 1; i >= lastRightGroupingIndex; i--)
+					key.fields[i] = Tuple.NullValue;
 				
 				tmpRes[lastRightGroupingIndex] += value.get();
 			    previousKey.fields = key.fields.clone();
 			}
 		}
 	
-	protected void new_compute2(AirlineWritable key, LongWritable value, Context context)
+	protected void new_compute2(Tuple key, LongWritable value, Context context)
 		    throws IOException, InterruptedException {
 		
 		if (previousKey2.fields != null) {
@@ -158,7 +158,7 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 		                tmpRes2[j] += tmpRes2[j+1];
 		                tmpVal.set(tmpRes2[j+1]);
 		                tmpRes2[j+1] = 0;
-		                previousKey2.fields[j+1] = AirlineWritable.NullValue;
+		                previousKey2.fields[j+1] = Tuple.NullValue;
 		                writeResult(context, previousKey2, tmpVal);
 		            }
 		            break;
@@ -166,12 +166,12 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 		    }
 		}
 		
-		if (key.fields[0] != AirlineWritable.NullValue) {
+		if (key.fields[0] != Tuple.NullValue) {
 			if (lastLeftIndex == pivot - 1)
 				writeResult(context, key, value);
 			
 			for(int i = pivot - 1; i >= lastLeftGroupingIndex; i--)
-				key.fields[i] = AirlineWritable.NullValue;
+				key.fields[i] = Tuple.NullValue;
 			
 			tmpRes2[lastLeftGroupingIndex] += value.get();
 			
@@ -183,7 +183,7 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 	}
 	
 	
-	public void writeResult(Context context, AirlineWritable key, LongWritable value) throws IOException, InterruptedException{		
+	public void writeResult(Context context, Tuple key, LongWritable value) throws IOException, InterruptedException{		
 		int length = this.attributes.length;
 		
 		for(int i = 0; i < length; i++){
@@ -241,7 +241,7 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 		else
 			this.isNeedComputeAllRegion = false;
 		
-		if (this.lastRightIndex == AirlineWritable.length - 1)
+		if (this.lastRightIndex == Tuple.length - 1)
 			lastRightGroupingIndex = lastRightIndex;
 		else
 			lastRightGroupingIndex = lastRightIndex + 1;
@@ -253,11 +253,11 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 	}
 	
 	@Override
-	protected void reduce(TupleWritable tuple, Iterable<LongWritable> value, Context context)
+	protected void reduce(Segment segment, Iterable<LongWritable> value, Context context)
 		throws IOException, InterruptedException {
 		
-    	AirlineWritable key = tuple.airlineWritable;    	
-    	int rollupID = tuple.id;
+		Tuple key = segment.tuple;    	
+    	int rollupID = segment.id;
     	
     	if (this.previousRollupId == -1){
     		this.previousRollupId = rollupID;
@@ -277,7 +277,7 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 		}
 		
 		this.tmpLW.set(sum);
-		if (key.fields[pivot] != AirlineWritable.NullValue) {
+		if (key.fields[pivot] != Tuple.NullValue) {
 			new_compute(key, tmpLW, context);
 		} else {
 			secondPass = true;
@@ -286,17 +286,17 @@ public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 	}
 	
 	public void computeLastRegion(Context context) throws IOException, InterruptedException{
-		int x = AirlineWritable.NullValue;
+		int x = Tuple.NullValue;
 		
 		this.tmpLW.set(0);
-    	new_compute(new AirlineWritable(x, x, x, x, x, x), this.tmpLW, context);
+    	new_compute(new Tuple(x, x, x, x, x, x), this.tmpLW, context);
     		
     	if (secondPass && (pivot != 0)) {
-    		new_compute2(new AirlineWritable(x, x, x, x, x, x), this.tmpLW, context);
+    		new_compute2(new Tuple(x, x, x, x, x, x), this.tmpLW, context);
     		
     		if (this.isNeedComputeAllRegion){
     			this.tmpLW.set(tmpRes2[0]);
-    		    context.write(new AirlineWritable(x, x, x, x, x, x), this.tmpLW);
+    		    context.write(new Tuple(x, x, x, x, x, x), this.tmpLW);
     		}
     	}
 	}

@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.old_data_writable;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -14,17 +14,17 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 
-import com.hadoop.cube.AirlineWritable;
+import com.hadoop.cube.old_data_writable.AirlineWritable;
 
-public class CreateDataBin2 {
+public class CreateDataBin {
 
 	public static void main(String[] args) throws IOException {
-		
 		if (args.length != 2 && args.length != 3){
 			System.out.println("Usage: <input> <output>");
 			return;
 		}
-		String[] input = {args[0]};
+		
+		String[] input = args[0].split(",");
 		String output = args[1];
 		int limit;
 		try{
@@ -56,24 +56,24 @@ public class CreateDataBin2 {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 			
 			while ((strLine = br.readLine()) != null)   {
-				String[] attributes = strLine.split("\t");
+				String[] attributes = strLine.split(",");
 				
 		        try{
 		        	int year = Integer.parseInt(attributes[0]);
 			        int month = Integer.parseInt(attributes[1]);
 			        int dayOfMonth = Integer.parseInt(attributes[2]);
 			        
-			        int flightNumber = Integer.parseInt(attributes[3]);
-			        int origin = Integer.parseInt(attributes[4]);
-			        int dest = Integer.parseInt(attributes[5]);
-			        int p = Integer.parseInt(attributes[6]);
+			        int flightNumber = Integer.parseInt(attributes[9]);
+			        int origin = attributes[16].hashCode();
+			        int dest = attributes[17].hashCode();
+			        int p = Integer.parseInt(attributes[18]);
 			        
 			        key.set(year, month, dayOfMonth, flightNumber, origin, dest);
 		            value.set(p);
 		            writer.append(key, value);
 		            
 		            current++;
-		            if (current % 1000000 == 0){
+		            if (current % 1000 == 0){
 		            	System.out.println("Num of written tuples: " + current);
 		            }
 		            

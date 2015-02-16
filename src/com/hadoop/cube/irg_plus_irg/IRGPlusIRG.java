@@ -1,6 +1,5 @@
 package com.hadoop.cube.irg_plus_irg;
 
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -22,11 +21,11 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import com.hadoop.cube.AirlineWritable;
-import com.hadoop.cube.TupleWritable;
 import com.hadoop.cube.data_structure.Cube;
 import com.hadoop.cube.data_structure.HeuristicBasedConverter;
 import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.data_writable.Segment;
+import com.hadoop.cube.data_writable.Tuple;
 import com.hadoop.cube.settings.GlobalSettings;
 import com.hadoop.cube.utils.Checker;
 import com.hadoop.cube.utils.Utils;
@@ -37,22 +36,23 @@ public class IRGPlusIRG extends Configured implements Tool{
 	private Path inputPath;
 	private Path outputDir;
 	private int pivot;
-	
+	private int tupleLength;
 	public static void main(String args[]) throws Exception {
 		int res = ToolRunner.run(new Configuration(), new IRGPlusIRG(args), args);
 		System.exit(res);
 	}
 	
 	public IRGPlusIRG(String[] args) {
-		if (args.length != 4) {
+		if (args.length != 5) {
 			System.out
-					.println("Usage: IRGPlusIRG <input_path> <output_path> <pivot> <num_reducers>");
+					.println("Usage: IRGPlusIRG <input_path> <output_path> <pivot> <num_reducers> <tuple_length>");
 			System.exit(0);
 		}
 		this.inputPath = new Path(args[0]);
 		this.outputDir = new Path(args[1]);
 		this.pivot = Integer.parseInt(args[2]);
 		this.numReducers = Integer.parseInt(args[3]);
+		this.tupleLength = Integer.parseInt(args[4]);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 
 		// set map class and the map output key and value classes
 		job.setMapperClass(IRGPlusIRGMapper.class);
-		job.setMapOutputKeyClass(TupleWritable.class);
+		job.setMapOutputKeyClass(Segment.class);
 		job.setMapOutputValueClass(LongWritable.class);
 		
 		job.setPartitionerClass(IRGPlusIRGPartitioner.class);
@@ -77,7 +77,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 		//job.setSortComparatorClass(TimestampWritable.Comparator.class);
 
 		// set job output format
-		job.setOutputKeyClass(AirlineWritable.class);
+		job.setOutputKeyClass(Tuple.class);
 		job.setOutputValueClass(LongWritable.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		
@@ -108,7 +108,12 @@ public class IRGPlusIRG extends Configured implements Tool{
 		Random tmp = new Random();
         int choosen = (tmp.nextInt() & Integer.MAX_VALUE);
 		
-		String[] attributes = {"1", "2", "3", "4", "5", "6"};
+        String[] attributes = new String[this.tupleLength];
+		
+		for(int i = 0; i < this.tupleLength; i++)
+			attributes[i] = Integer.toString(i);
+		Tuple.setLength(tupleLength);
+		
 		Cube cube = new Cube(attributes);
 		List<RollUp> rollups = cube.toRollUps(new HeuristicBasedConverter(), pivot);
 		

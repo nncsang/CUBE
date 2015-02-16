@@ -5,7 +5,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
-import com.hadoop.cube.TupleWritable;
+import com.hadoop.cube.old_data_writable.TupleWritable;
 import com.hadoop.cube.settings.GlobalSettings;
 
 public class IRGPlusIRGSorter extends WritableComparator{

@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.old_data_writable;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -14,9 +14,9 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 
-import com.hadoop.cube.TimeStampWritable;;
+import com.hadoop.cube.old_data_writable.AirlineWritable;
 
-public class CreateDataBin3 {
+public class CreateDataBin2 {
 
 	public static void main(String[] args) throws IOException {
 		
@@ -43,8 +43,8 @@ public class CreateDataBin3 {
 		
 		
 		String strLine ="";
-		long current = 0;
-		TimeStampWritable key = new TimeStampWritable();
+		int current = 0;
+		AirlineWritable key = new AirlineWritable();
 		LongWritable value = new LongWritable();
         writer = SequenceFile.createWriter(fs, conf, outFile, key.getClass(), value.getClass());
         
@@ -56,7 +56,7 @@ public class CreateDataBin3 {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 			
 			while ((strLine = br.readLine()) != null)   {
-				String[] attributes = strLine.split(",");
+				String[] attributes = strLine.split("\t");
 				
 		        try{
 		        	int year = Integer.parseInt(attributes[0]);
@@ -65,10 +65,10 @@ public class CreateDataBin3 {
 			        
 			        int flightNumber = Integer.parseInt(attributes[3]);
 			        int origin = Integer.parseInt(attributes[4]);
-			        int p = Integer.parseInt(attributes[5]);
+			        int dest = Integer.parseInt(attributes[5]);
+			        int p = Integer.parseInt(attributes[6]);
 			        
-			        
-			        key.set(year, month, dayOfMonth, flightNumber, origin);
+			        key.set(year, month, dayOfMonth, flightNumber, origin, dest);
 		            value.set(p);
 		            writer.append(key, value);
 		            

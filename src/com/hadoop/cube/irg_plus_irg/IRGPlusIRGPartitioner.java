@@ -11,11 +11,11 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
-import com.hadoop.cube.AirlineWritable;
-import com.hadoop.cube.TupleWritable;
 import com.hadoop.cube.settings.GlobalSettings;
+import com.hadoop.cube.data_writable.Segment;
+import com.hadoop.cube.data_writable.Tuple;
 
-public class IRGPlusIRGPartitioner extends Partitioner<TupleWritable, LongWritable> implements Configurable {
+public class IRGPlusIRGPartitioner extends Partitioner<Segment, LongWritable> implements Configurable {
     
     protected MessageDigest m = null;
     protected int pivot = -1;
@@ -38,14 +38,14 @@ public class IRGPlusIRGPartitioner extends Partitioner<TupleWritable, LongWritab
     }
 
     @Override
-    public int getPartition(TupleWritable tuple, LongWritable value, int numReduceTasks) {
-    	AirlineWritable key = tuple.airlineWritable;
+    public int getPartition(Segment segment, LongWritable value, int numReduceTasks) {
+    	Tuple key = segment.tuple;
     	
-        if (key.fields[pivot] == AirlineWritable.NullValue) {
+        if (key.fields[pivot] == Tuple.NullValue) {
             return choosen % numReduceTasks;
         } else {
             m.reset();
-            m.update(ByteBuffer.allocate(4).putInt(tuple.id).array());
+            m.update(ByteBuffer.allocate(4).putInt(segment.id).array());
             
             for (i = 0; i <= pivot; i++) {
                 m.update(ByteBuffer.allocate(4).putInt(key.fields[i]).array());

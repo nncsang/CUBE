@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.old_data_writable;
 
 import java.io.DataInput;
 import java.io.DataOutput;

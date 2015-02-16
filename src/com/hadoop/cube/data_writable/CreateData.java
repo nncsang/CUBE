@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.data_writable;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -14,21 +14,22 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 
-import com.hadoop.cube.AirlineWritable;
-
-public class CreateDataBin {
+public class CreateData {
 
 	public static void main(String[] args) throws IOException {
-		if (args.length != 2 && args.length != 3){
-			System.out.println("Usage: <input> <output>");
+		
+		if (args.length != 3 && args.length != 4){
+			System.out.println("Usage: <input> <output> <tuple_length> [limit]");
 			return;
 		}
 		
 		String[] input = args[0].split(",");
 		String output = args[1];
+		int length = Integer.valueOf(args[2]);
 		int limit;
+		
 		try{
-			limit = Integer.valueOf(args[2]);
+			limit = Integer.valueOf(args[3]);
 		}catch(Exception ex){
 			limit = -1;
 		}
@@ -40,11 +41,12 @@ public class CreateDataBin {
 		Path outFile = new Path(output);
 		SequenceFile.Writer writer = null;
 		
-		
-		
+	
 		String strLine ="";
-		int current = 0;
-		AirlineWritable key = new AirlineWritable();
+		long current = 0;
+		Tuple.setLength(length);
+		Tuple key = new Tuple();
+		
 		LongWritable value = new LongWritable();
         writer = SequenceFile.createWriter(fs, conf, outFile, key.getClass(), value.getClass());
         
@@ -68,21 +70,21 @@ public class CreateDataBin {
 			        int dest = attributes[17].hashCode();
 			        int p = Integer.parseInt(attributes[18]);
 			        
+			        
 			        key.set(year, month, dayOfMonth, flightNumber, origin, dest);
 		            value.set(p);
 		            writer.append(key, value);
 		            
 		            current++;
-		            if (current % 1000 == 0){
+		            if (current % 1000000 == 0){
 		            	System.out.println("Num of written tuples: " + current);
 		            }
 		            
 		            if (current == limit && limit != -1)
 		            	break;
-		            	
 		        }
 		        catch(Exception ex){
-		        	
+		        	System.out.println(ex.toString());
 		        }
 			}
 			
@@ -100,5 +102,4 @@ public class CreateDataBin {
 		System.out.println("Total written tuples: " + current);
 		System.out.println("Done");
 	}
-
 }

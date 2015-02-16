@@ -27,10 +27,11 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import com.hadoop.cube.AirlineWritable;
 import com.hadoop.cube.data_structure.Cube;
 import com.hadoop.cube.data_structure.Region;
+import com.hadoop.cube.data_writable.Tuple;
 import com.hadoop.cube.irg_plus_irg.HashPartitioner;
+import com.hadoop.cube.old_data_writable.AirlineWritable;
 import com.hadoop.cube.settings.GlobalSettings;
 import com.hadoop.cube.utils.Utils;
 
@@ -39,6 +40,7 @@ public class NaiveMRCube extends Configured implements Tool {
 	private int numReducers;
 	private Path inputFile;
 	private Path outputDir;
+	private int tupleLength;
 	
 	public static void main(String args[]) throws Exception {
 	    int res = ToolRunner.run(new Configuration(), new NaiveMRCube(args), args);
@@ -46,21 +48,25 @@ public class NaiveMRCube extends Configured implements Tool {
 	}
 	
 	public NaiveMRCube(String[] args) {
-	    if (args.length != 3) {
-	      System.out.print(args.length);
-	      System.out.println("Usage: NaiveMRCube <num_reducers> <input_path> <output_path>");
+	    if (args.length != 4) {
+	      System.out.println("Usage: NaiveMRCube <num_reducers> <input_path> <output_path> <tuple_length>");
 	      System.exit(0);
 	    }
 	    
 	    this.numReducers = Integer.parseInt(args[0]);
 	    this.inputFile = new Path(args[1]);
 	    this.outputDir = new Path(args[2]);
+	    this.tupleLength = Integer.parseInt(args[3]);
 	}
 	
 	@Override
 	public int run(String[] arg0) throws Exception {
 		Configuration conf = this.getConf();
-		String[] attributes = {"y", "M", "d", "h", "m", "s"};
+		String[] attributes = new String[this.tupleLength];
+		
+		for(int i = 0; i < this.tupleLength; i++)
+			attributes[i] = Integer.toString(i);
+		Tuple.setLength(tupleLength);
 		
 		Cube cube = new Cube(attributes);
 		Set<Region> regions = cube.cubeRegions();
@@ -68,7 +74,6 @@ public class NaiveMRCube extends Configured implements Tool {
 		String regionList = "";
 		while(iter.hasNext()){
 			String region = iter.next().toString();
-			//region = region.substring(1, region.length() - 1);
 			regionList = regionList + region + GlobalSettings.DELIM_BETWEEN_CONTENTS_OF_TUPLE;
 		}
 		
@@ -90,12 +95,12 @@ public class NaiveMRCube extends Configured implements Tool {
 		    
 		// TODO: set map class and the map output key and value classes
 		job.setMapperClass(NaiveMRCubeMapper.class);
-		job.setMapOutputKeyClass(AirlineWritable.class);
+		job.setMapOutputKeyClass(Tuple.class);
 		job.setMapOutputValueClass(LongWritable.class);
 		    
 		// TODO: set reduce class and the reduce output key and value classes
 		job.setReducerClass(NaiveMRCubeReducer.class);
-		job.setOutputKeyClass(AirlineWritable.class);
+		job.setOutputKeyClass(Tuple.class);
 		job.setOutputValueClass(LongWritable.class);
 		
 		job.setPartitionerClass(HashPartitioner.class);
@@ -123,7 +128,7 @@ public class NaiveMRCube extends Configured implements Tool {
 	}
 }
 
-class NaiveMRCubeMapper extends Mapper<AirlineWritable, LongWritable, AirlineWritable, LongWritable>{
+class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>{
 	private List<Region> regions;
 	
 	@Override
@@ -139,7 +144,7 @@ class NaiveMRCubeMapper extends Mapper<AirlineWritable, LongWritable, AirlineWri
 	}
 	
 	@Override
-	protected void map(AirlineWritable value, LongWritable index, Context context)
+	protected void map(Tuple value, LongWritable index, Context context)
 			throws IOException, InterruptedException {
 		
 		int size = regions.size();
@@ -148,7 +153,7 @@ class NaiveMRCubeMapper extends Mapper<AirlineWritable, LongWritable, AirlineWri
 			String[] attributes = region.getAttributes();
 			int length = attributes.length;
 			
-			AirlineWritable key = new AirlineWritable();
+			Tuple key = new Tuple();
 			for(int j = 0; j < length; j++){
 				if (attributes[j].equals(GlobalSettings.ALL)){
 					key.fields[j] = AirlineWritable.NullValue;
@@ -162,9 +167,9 @@ class NaiveMRCubeMapper extends Mapper<AirlineWritable, LongWritable, AirlineWri
 	}
 }
 
-class NaiveMRCubeReducer extends Reducer<AirlineWritable, LongWritable, AirlineWritable, LongWritable>{
+class NaiveMRCubeReducer extends Reducer<Tuple, LongWritable, Tuple, LongWritable>{
 	@Override
-	protected void reduce(AirlineWritable key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
+	protected void reduce(Tuple key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
 		long sum = 0;
 		for (LongWritable lw : values) {
 		    sum += lw.get();

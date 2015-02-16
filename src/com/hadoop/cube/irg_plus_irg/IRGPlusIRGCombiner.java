@@ -7,11 +7,11 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
-import com.hadoop.cube.TupleWritable;
+import com.hadoop.cube.data_writable.Segment;
 
-public class IRGPlusIRGCombiner extends Reducer<TupleWritable,
+public class IRGPlusIRGCombiner extends Reducer<Segment,
 									LongWritable,
-									TupleWritable,
+									Segment,
 									LongWritable> {
 
 	public IRGPlusIRGCombiner() {
@@ -19,7 +19,7 @@ public class IRGPlusIRGCombiner extends Reducer<TupleWritable,
 	}
 	
 	@Override
-	protected void reduce(TupleWritable key, Iterable<LongWritable> value, Context context)
+	protected void reduce(Segment key, Iterable<LongWritable> value, Context context)
 	    throws IOException, InterruptedException {
 		long sum = 0;
 		for (LongWritable lw : value) {

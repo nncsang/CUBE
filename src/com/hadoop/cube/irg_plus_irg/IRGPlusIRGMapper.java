@@ -12,14 +12,14 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
-import com.hadoop.cube.AirlineWritable;
-import com.hadoop.cube.TupleWritable;
 import com.hadoop.cube.data_structure.Region;
 import com.hadoop.cube.data_structure.RollUp;
 import com.hadoop.cube.settings.GlobalSettings;
 import com.hadoop.cube.utils.Utils;
+import com.hadoop.cube.data_writable.Segment;
+import com.hadoop.cube.data_writable.Tuple;
 
-public class IRGPlusIRGMapper extends Mapper<AirlineWritable, LongWritable, TupleWritable, LongWritable> { 
+public class IRGPlusIRGMapper extends Mapper<Tuple, LongWritable, Segment, LongWritable> { 
 
 	private Map<String, Integer> attrPosition;
 	
@@ -27,11 +27,11 @@ public class IRGPlusIRGMapper extends Mapper<AirlineWritable, LongWritable, Tupl
 	private int size = 0;
 	protected int pivot = -1;
 	
-	private TupleWritable tuple1;
-	private TupleWritable tuple2;
+	private Segment segment1;
+	private Segment segment2;
 
 	@Override
-    protected void setup(org.apache.hadoop.mapreduce.Mapper<AirlineWritable, LongWritable, TupleWritable, LongWritable>.Context context) throws IOException, InterruptedException {
+    protected void setup(org.apache.hadoop.mapreduce.Mapper<Tuple, LongWritable, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
         Configuration conf = context.getConfiguration();
         
@@ -61,19 +61,19 @@ public class IRGPlusIRGMapper extends Mapper<AirlineWritable, LongWritable, Tupl
 		
 		this.size = rollups.size();
 		
-		this.tuple1 = new TupleWritable();
-		this.tuple2 = new TupleWritable();
+		this.segment1 = new Segment();
+		this.segment2 = new Segment();
     }
 
     @Override
-	protected void map(AirlineWritable key, 
+	protected void map(Tuple key, 
 	        LongWritable value,
 			Context context) throws IOException, InterruptedException {
     	int testId = 16;
     	for(int i = 0; i < this.size; i++){
     		
-    		this.tuple1.id = i;
-    		this.tuple2.id = i;
+    		this.segment1.id = i;
+    		this.segment2.id = i;
     		
     		RollUp rollup = rollups.get(i);
     		
@@ -87,19 +87,19 @@ public class IRGPlusIRGMapper extends Mapper<AirlineWritable, LongWritable, Tupl
     			int attr = key.fields[attrPosition.get(attributes[j])]; 
     		
 	    		if (j >= this.pivot){
-	    			this.tuple1.airlineWritable.fields[j] = AirlineWritable.NullValue;
+	    			this.segment1.tuple.fields[j] = Tuple.NullValue;
 	    		}else{
-	    			this.tuple1.airlineWritable.fields[j] = attr;
+	    			this.segment1.tuple.fields[j] = attr;
 	    		}
     			
-    			this.tuple2.airlineWritable.fields[j] = attr;
+    			this.segment2.tuple.fields[j] = attr;
     		}
     		
     		if (isNeedEmitTuple[0] == true)
-    			context.write(this.tuple1, value);
+    			context.write(this.segment1, value);
     		
     		if (isNeedEmitTuple[1] == true){
-    			context.write(this.tuple2, value);
+    			context.write(this.segment2, value);
     		}
     	}
     }
