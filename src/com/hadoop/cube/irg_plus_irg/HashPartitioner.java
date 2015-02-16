@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.irg_plus_irg;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

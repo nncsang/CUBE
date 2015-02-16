@@ -1,4 +1,7 @@
-package com.hadoop.cube2rollups;
+package com.hadoop.cube.data_structure;
+
+import com.hadoop.cube.settings.GlobalSettings;
+import com.hadoop.cube.utils.Utils;
 
 public class Region implements Comparable<Region>{
 	String[] attributes;

@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.irg_plus_irg;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,10 +12,12 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
-import com.hadoop.cube2rollups.GlobalSettings;
-import com.hadoop.cube2rollups.Region;
-import com.hadoop.cube2rollups.RollUp;
-import com.hadoop.cube2rollups.Utils;
+import com.hadoop.cube.AirlineWritable;
+import com.hadoop.cube.TupleWritable;
+import com.hadoop.cube.data_structure.Region;
+import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.settings.GlobalSettings;
+import com.hadoop.cube.utils.Utils;
 
 public class IRGPlusIRGMapper extends Mapper<AirlineWritable, LongWritable, TupleWritable, LongWritable> { 
 

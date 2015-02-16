@@ -1,4 +1,4 @@
-package com.hadoop.cube2rollups;
+package com.hadoop.cube.settings;
 
 public class GlobalSettings {
 	public static String DELIM_BETWEEN_ATTRIBUTES = ",";

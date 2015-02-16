@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.irg_plus_irg;
 
 
 import java.io.IOException;
@@ -23,12 +23,13 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import com.hadoop.cube.AirlineWritable;
-import com.hadoop.cube2rollups.Checker;
-import com.hadoop.cube2rollups.Cube;
-import com.hadoop.cube2rollups.GlobalSettings;
-import com.hadoop.cube2rollups.HeuristicBasedConverter;
-import com.hadoop.cube2rollups.RollUp;
-import com.hadoop.cube2rollups.Utils;
+import com.hadoop.cube.TupleWritable;
+import com.hadoop.cube.data_structure.Cube;
+import com.hadoop.cube.data_structure.HeuristicBasedConverter;
+import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.settings.GlobalSettings;
+import com.hadoop.cube.utils.Checker;
+import com.hadoop.cube.utils.Utils;
 
 
 public class IRGPlusIRG extends Configured implements Tool{
@@ -140,7 +141,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 		job.getConfiguration().set("tupleList", tupleList);
 		
 		job.waitForCompletion(true);
-		//Checker.main(null);
+		Checker.main(null);
 		return 0;
 	}
 }

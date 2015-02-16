@@ -1,4 +1,4 @@
-package com.hadoop.cube2rollups;
+package com.hadoop.cube.data_structure;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import com.hadoop.cube.settings.GlobalSettings;
 
 
 public class Cube {

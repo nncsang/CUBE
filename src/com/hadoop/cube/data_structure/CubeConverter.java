@@ -1,4 +1,4 @@
-package com.hadoop.cube2rollups;
+package com.hadoop.cube.data_structure;
 
 import java.util.List;
 import java.util.Set;

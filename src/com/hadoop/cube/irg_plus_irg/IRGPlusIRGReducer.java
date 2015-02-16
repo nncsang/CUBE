@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.irg_plus_irg;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,8 +12,10 @@ import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import com.hadoop.cube2rollups.GlobalSettings;
-import com.hadoop.cube2rollups.RollUp;
+import com.hadoop.cube.AirlineWritable;
+import com.hadoop.cube.TupleWritable;
+import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.settings.GlobalSettings;
 
 public class IRGPlusIRGReducer extends Reducer<TupleWritable,
 											LongWritable, 

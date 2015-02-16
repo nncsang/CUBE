@@ -13,8 +13,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import com.hadoop.cube.TimeStampWritable;
-import com.hadoop.cube2rollups.GlobalSettings;
-import com.hadoop.cube2rollups.RollUp;
+import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.settings.GlobalSettings;
 
 public class IRGPlusIRGReducer extends Reducer<TupleWritable5,
 											LongWritable, 

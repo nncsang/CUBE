@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.irg_plus_irg;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -12,7 +12,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
 import com.hadoop.cube.AirlineWritable;
-import com.hadoop.cube2rollups.GlobalSettings;
+import com.hadoop.cube.TupleWritable;
+import com.hadoop.cube.settings.GlobalSettings;
 
 public class IRGPlusIRGPartitioner extends Partitioner<TupleWritable, LongWritable> implements Configurable {
     

@@ -24,11 +24,11 @@ import org.apache.hadoop.util.ToolRunner;
 
 import com.hadoop.cube.TimeStampWritable;
 import com.hadoop.cube5.Checker;
-import com.hadoop.cube2rollups.Cube;
-import com.hadoop.cube2rollups.GlobalSettings;
-import com.hadoop.cube2rollups.HeuristicBasedConverter;
-import com.hadoop.cube2rollups.RollUp;
-import com.hadoop.cube2rollups.Utils;
+import com.hadoop.cube.data_structure.Cube;
+import com.hadoop.cube.data_structure.HeuristicBasedConverter;
+import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.settings.GlobalSettings;
+import com.hadoop.cube.utils.Utils;
 
 
 public class IRGPlusIRG extends Configured implements Tool{

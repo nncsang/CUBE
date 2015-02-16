@@ -5,7 +5,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
-import com.hadoop.cube2rollups.GlobalSettings;
+import com.hadoop.cube.settings.GlobalSettings;
 
 public class IRGPlusIRGSorter extends WritableComparator{
 

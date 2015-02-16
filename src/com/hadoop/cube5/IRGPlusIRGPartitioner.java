@@ -12,7 +12,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
 import com.hadoop.cube.TimeStampWritable;
-import com.hadoop.cube2rollups.GlobalSettings;
+import com.hadoop.cube.settings.GlobalSettings;
 
 public class IRGPlusIRGPartitioner extends Partitioner<TupleWritable5, LongWritable> implements Configurable {
     

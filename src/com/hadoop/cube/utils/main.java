@@ -1,9 +1,14 @@
-package com.hadoop.cube2rollups;
+package com.hadoop.cube.utils;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.hadoop.cube.data_structure.Cube;
+import com.hadoop.cube.data_structure.HeuristicBasedConverter;
+import com.hadoop.cube.data_structure.Region;
+import com.hadoop.cube.data_structure.RollUp;
 
 public class main {
 	static public void main(String[] args){
@@ -71,6 +76,5 @@ public class main {
 		}
 		
 		System.out.println(rollups.size());
-	
 	}
 }

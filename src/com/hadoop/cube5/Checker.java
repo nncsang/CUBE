@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.hadoop.cube2rollups.Utils;
+import com.hadoop.cube.utils.Utils;
 
 public class Checker {
 	static public void main(String[] args) throws IOException{

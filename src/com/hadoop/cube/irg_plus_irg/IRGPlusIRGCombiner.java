@@ -1,4 +1,4 @@
-package com.hadoop.cube;
+package com.hadoop.cube.irg_plus_irg;
 
 import java.io.IOException;
 
@@ -6,6 +6,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
+
+import com.hadoop.cube.TupleWritable;
 
 public class IRGPlusIRGCombiner extends Reducer<TupleWritable,
 									LongWritable,

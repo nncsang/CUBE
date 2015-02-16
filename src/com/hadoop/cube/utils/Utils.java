@@ -1,4 +1,4 @@
-package com.hadoop.cube2rollups;
+package com.hadoop.cube.utils;
 
 import java.util.Iterator;
 import java.util.List;

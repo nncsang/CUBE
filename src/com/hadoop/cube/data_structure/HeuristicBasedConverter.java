@@ -1,4 +1,4 @@
-package com.hadoop.cube2rollups;
+package com.hadoop.cube.data_structure;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.hadoop.cube.settings.GlobalSettings;
 
 public class HeuristicBasedConverter implements CubeConverter{
 	Set<Region> cubeRegions;

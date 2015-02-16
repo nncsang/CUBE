@@ -29,10 +29,10 @@ import org.apache.hadoop.util.ToolRunner;
 
 import com.hadoop.cube5.HashPartitioner;
 import com.hadoop.cube.TimeStampWritable;
-import com.hadoop.cube2rollups.Cube;
-import com.hadoop.cube2rollups.GlobalSettings;
-import com.hadoop.cube2rollups.Region;
-import com.hadoop.cube2rollups.Utils;
+import com.hadoop.cube.data_structure.Cube;
+import com.hadoop.cube.data_structure.Region;
+import com.hadoop.cube.settings.GlobalSettings;
+import com.hadoop.cube.utils.Utils;
 
 
 public class NaiveMRCube extends Configured implements Tool {
