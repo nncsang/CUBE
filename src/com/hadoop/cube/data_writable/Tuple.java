@@ -52,6 +52,49 @@ public class Tuple implements WritableComparable<Tuple> {
         for (int i = 0; i < Tuple.length; i++)
             out.writeInt(this.fields[i]);
     }
+    
+    public static int compareTo(Tuple tuple1, Tuple tuple2, int index){
+    	if (tuple1 == null || tuple2 == null)
+    		return -1;
+    	if (tuple1.fields[index] < tuple2.fields[index]){
+			return -1;
+		}else if (tuple1.fields[index] > tuple2.fields[index]){
+			return 1;
+		}
+    	return 0;
+    }
+    
+    public static int compareTo(Tuple tuple1, Tuple tuple2, List<Integer> positions, int start){
+    	
+    	if (tuple1 == null || tuple2 == null)
+    		return -1;
+    	
+    	for(int i = start; i < positions.size(); i++){
+			int index = positions.get(i);
+			if (tuple1.fields[index] < tuple2.fields[index]){
+				return -1;
+			}else if (tuple1.fields[index] > tuple2.fields[index]){
+				return 1;
+			}
+		}
+    	return 0;
+    }
+
+    public static int compareTo(Tuple tuple1, Tuple tuple2, List<Integer> positions, int start, int end){
+    	
+    	if (tuple1 == null || tuple2 == null)
+    		return -1;
+    	
+    	for(int i = start; i <= end; i++){
+			int index = positions.get(i);
+			if (tuple1.fields[index] < tuple2.fields[index]){
+				return -1;
+			}else if (tuple1.fields[index] > tuple2.fields[index]){
+				return 1;
+			}
+		}
+    	return 0;
+    }
 
     public static int compareTo(Tuple tuple1, Tuple tuple2, List<Integer> positions){
     	

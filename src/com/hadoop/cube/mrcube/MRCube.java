@@ -1,5 +1,6 @@
 package com.hadoop.cube.mrcube;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -16,6 +17,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import com.hadoop.cube.buc.BUC;
 import com.hadoop.cube.data_structure.Batch;
 import com.hadoop.cube.data_structure.CubeLattice;
 import com.hadoop.cube.data_structure.Cuboid;
@@ -130,9 +132,23 @@ public class MRCube extends Configured implements Tool{
 			unfriendlyBatches += cube.unfriendlyBatches.get(i).convertToString() + "=";
 		unfriendlyBatches += cube.unfriendlyBatches.get(cube.unfriendlyBatches.size() - 1).convertToString();
 		
+		List<BUC> bucs = new ArrayList<BUC>();
+		
+		for(Batch batch: cube.friendlyBatches){
+			bucs.add(new BUC(batch));
+		}
+		
+		String bucsStr = "";
+		for(int i = 0; i < bucs.size() - 1; i++){
+			bucsStr += bucs.get(i).convertToString() + "z";
+			bucs.get(i).printSortSegments(bucs.get(i).sortSegments);
+		}
+		bucsStr += bucs.get(bucs.size() - 1).convertToString();
+		
 		
 		job.getConfiguration().set("friendlyBatches", friendlyBatches);
 		job.getConfiguration().set("unfriendlyBatches", unfriendlyBatches);
+		job.getConfiguration().set("bucsStr", bucsStr);
 		
 		job.waitForCompletion(true);
 		return 0;

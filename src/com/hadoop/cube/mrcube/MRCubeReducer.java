@@ -12,6 +12,7 @@ import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
+import com.hadoop.cube.buc.BUC;
 import com.hadoop.cube.data_structure.RollUp;
 import com.hadoop.cube.data_writable.Tuple;
 import com.hadoop.cube.data_writable.Segment;
@@ -22,6 +23,7 @@ public class MRCubeReducer extends Reducer<Segment,
 											Tuple, 
 											LongWritable> { 
 	
+	List<BUC> bucs = new ArrayList<BUC>();
 	public MRCubeReducer() {
 		
 	}
@@ -29,6 +31,16 @@ public class MRCubeReducer extends Reducer<Segment,
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
 		super.cleanup(context);
+		 Configuration conf = context.getConfiguration();
+	        
+	     String[] bucsStr = conf.get("bucsStr").split("z");
+	     for(String s: bucsStr){
+	    	 bucs.add(new BUC(s));
+	     }
+	     
+	     for(BUC buc: bucs){
+	    	 buc.printSortSegments(buc.sortSegments);
+	     }
 	}
 	
 	@Override
