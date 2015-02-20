@@ -3,7 +3,9 @@ package com.hadoop.cube.data_writable;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.List;
 
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
@@ -12,6 +14,7 @@ public class Tuple implements WritableComparable<Tuple> {
     public static int length = 0;
     public static int NullValue = -1;
     public int[] fields = null;
+    public LongWritable value = new LongWritable(0);
     
     /*Called before creating any instances*/
     public static void setLength(int length){
@@ -50,6 +53,22 @@ public class Tuple implements WritableComparable<Tuple> {
             out.writeInt(this.fields[i]);
     }
 
+    public static int compareTo(Tuple tuple1, Tuple tuple2, List<Integer> positions){
+    	
+    	if (tuple1 == null || tuple2 == null)
+    		return -1;
+    	
+    	for(int i = 0; i < positions.size(); i++){
+			int index = positions.get(i);
+			if (tuple1.fields[index] < tuple2.fields[index]){
+				return -1;
+			}else if (tuple1.fields[index] > tuple2.fields[index]){
+				return 1;
+			}
+		}
+    	return 0;
+    }
+    
     @Override
     public int compareTo(Tuple obj) {
     	if (obj == null)

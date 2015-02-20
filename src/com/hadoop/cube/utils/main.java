@@ -6,33 +6,48 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.hadoop.io.LongWritable;
+
+import com.hadoop.cube.buc.BUC;
+import com.hadoop.cube.data_structure.Batch;
 import com.hadoop.cube.data_structure.CubeLattice;
 import com.hadoop.cube.data_structure.HeuristicBasedConverter;
 import com.hadoop.cube.data_structure.Cuboid;
 import com.hadoop.cube.data_structure.RollUp;
+import com.hadoop.cube.data_writable.Tuple;
 
 public class main {
 	static public void main(String[] args){
 		int pivot = 3;
-		String[] attributes = {"country", "state", "city", "topic"};
+		String[] attributes = {"A", "B", "C", "D"};
 		//String[] attributes = {"1", "2", "3", "4", "5", "6"};
 		//String[] attributes = {"y", "m", "d", "h", "mm"};
 		//String[] attributes = {"y", "m", "d", "h"};
 		//String[] attributes = {"A", "B", "C"};
 		CubeLattice cube = new CubeLattice(attributes);
 		List<Cuboid> cuboids = cube.cuboids();
+		cuboids.get(0).setFriendly(false);
+		cuboids.get(0).setPartitionFactor(10);
+		cuboids.get(1).setFriendly(false);
+		cuboids.get(4).setFriendly(false);
+		cuboids.get(8).setFriendly(false);
 		
-		for(int i = 0; i < cuboids.size(); i++){
-			Cuboid cuboid = cuboids.get(i);
-			List<Cuboid> children = cuboid.getChildren();
-			System.out.println(cuboid);
-			System.out.println("Children: ");
-			for(int j = 0; j < children.size(); j++){
-				System.out.println(children.get(j));
-			}
-			
-			System.out.println("---------------------------------------\n");
-		}
+		cube.printCuboids();
+		cube.batching();
+		cube.printBatches();
+		
+		Tuple.setLength(4);
+		BUC buc = new BUC(cube.friendlyBatches.get(2));
+		Tuple tuple1 = new Tuple(1,1,2,3);
+		Tuple tuple2 = new Tuple(1,1,2,3);
+		Tuple tuple3 = new Tuple(1,2,2,3);
+		
+		buc.addTuple(tuple1, new LongWritable(2));
+		buc.addTuple(tuple2, new LongWritable(3));
+		buc.addTuple(tuple3, new LongWritable(4));
+		buc.finish();
+		
+		//cube.printStructure();
 		
 //		cube.cubeRegions();
 //		cube.printRegions();
