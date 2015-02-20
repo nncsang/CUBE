@@ -37,7 +37,7 @@ public class main {
 		cube.printBatches();
 		
 		Tuple.setLength(4);
-		BUC buc = new BUC(cube.friendlyBatches.get(1));
+		BUC buc = new BUC(cube.friendlyBatches.get(2));
 		Tuple tuple1 = new Tuple(1,1,2,3);
 		Tuple tuple2 = new Tuple(1,1,2,3);
 		Tuple tuple3 = new Tuple(1,2,2,3);

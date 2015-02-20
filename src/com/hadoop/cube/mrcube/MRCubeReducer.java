@@ -39,7 +39,7 @@ public class MRCubeReducer extends Reducer<Segment,
 	     }
 	     
 	     for(BUC buc: bucs){
-	    	 buc.printSortSegments(buc.sortSegments);
+	    	 //buc.printSortSegments(buc.sortSegments);
 	     }
 	}
 	

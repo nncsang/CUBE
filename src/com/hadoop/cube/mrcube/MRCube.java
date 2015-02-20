@@ -141,7 +141,7 @@ public class MRCube extends Configured implements Tool{
 		String bucsStr = "";
 		for(int i = 0; i < bucs.size() - 1; i++){
 			bucsStr += bucs.get(i).convertToString() + "z";
-			bucs.get(i).printSortSegments(bucs.get(i).sortSegments);
+			//bucs.get(i).printSortSegments(bucs.get(i).sortSegments);
 		}
 		bucsStr += bucs.get(bucs.size() - 1).convertToString();
 		
