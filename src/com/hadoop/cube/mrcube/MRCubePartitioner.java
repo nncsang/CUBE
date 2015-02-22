@@ -3,6 +3,7 @@ package com.hadoop.cube.mrcube;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configurable;
@@ -28,7 +29,7 @@ public class MRCubePartitioner extends Partitioner<Segment, LongWritable> implem
     
     @Override
     public void setConf(Configuration conf) {
-        choosen = Integer.parseInt(conf.get("choosen", "0"));
+    	//System.out.println("PARTITION:");
     }
 
     @Override
@@ -38,15 +39,19 @@ public class MRCubePartitioner extends Partitioner<Segment, LongWritable> implem
 
     @Override
     public int getPartition(Segment segment, LongWritable value, int numReduceTasks) {
+    	
     	Tuple key = segment.tuple;
   
     	m.reset();
         m.update(ByteBuffer.allocate(4).putInt(segment.id).array());
-            
-        for (i = 0; i < Tuple.length; i++) {
-        	m.update(ByteBuffer.allocate(4).putInt(key.fields[i]).array());
+        
+        List<Integer> partitionOrder = Segment.partitionOrder.get(segment.id);
+        
+        for (i = 0; i < partitionOrder.size(); i++) {
+        	m.update(ByteBuffer.allocate(4).putInt(key.fields[partitionOrder.get(i)]).array());
         }
         
+        //System.out.println(segment + " " + (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks);
         return (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks;
     }
 }

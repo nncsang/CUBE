@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.Reducer.Context;
 
 import com.hadoop.cube.data_structure.Batch;
 import com.hadoop.cube.data_structure.Cuboid;
@@ -19,7 +20,15 @@ public class BUC {
 	public Tuple prevTuple;
 	public static Tuple tempTuple;
 	public static int[] nullArray;
-	List<Cuboid> cuboids;
+	public List<Cuboid> cuboids;
+	public Context context;
+	public LongWritable long_writable = new LongWritable(0);
+	
+	public void print(){
+		for(Cuboid cuboid : cuboids){
+			System.out.println(Utils.joinI(cuboid.numPresentation, ""));
+		}
+	}
 	
 	public BUC(Batch batch){
 		cuboids = new ArrayList<Cuboid>();
@@ -30,10 +39,11 @@ public class BUC {
 		prevTuple = null;
 		nullArray = new int[Tuple.length];
 		Arrays.fill(nullArray, -1);	
-		
+		context = null;
 	}
 	
-	public BUC(String str){
+	public BUC(String str, Context context){
+		this.context = context;
 		tuples = new ArrayList<Tuple>();
 		prevTuple = null;
 		nullArray = new int[Tuple.length];
@@ -67,17 +77,19 @@ public class BUC {
 		return str;
 	}
 	
-	public void addTuple(Tuple tuple, LongWritable value){
+	public void addTuple(Tuple tuple, long value){
 		tuple.value = value;
 		if (isNewPartition(tuple)){
 			if (prevTuple != null){
 				buc(tuples, cuboids, 0);
 				tuples.clear();
+			}else{
+				prevTuple = new Tuple();
 			}
 		}
 		
 		tuples.add(tuple);
-		prevTuple = tuple;
+		prevTuple.fields = tuple.fields;
 	}
 	
 	public void finish(){
@@ -93,9 +105,8 @@ public class BUC {
 		return false;
 	}
 	
-	public void buc(List<Tuple> tuples, List<Cuboid> cuboids, int dim){
+	public void buc(List<Tuple> tuples, List<Cuboid> cuboids, final int dim){
 		for(int i = 0; i < cuboids.size(); i++){
-			
 			final List<Integer> numPresentation = cuboids.get(i).numPresentation;
 			if (dim >= numPresentation.size())
 				continue;
@@ -108,7 +119,7 @@ public class BUC {
 			int start_shared_sort = i;
 			i++;
 			while(i < cuboids.size()){
-				if (cuboids.get(i).numPresentation.size() >= i + 1 && cuboids.get(i).numPresentation.get(dim) == sortOrder){
+				if (cuboids.get(i).numPresentation.size() >= dim + 1 && cuboids.get(i).numPresentation.get(dim) == sortOrder){
 					newCuboids.add(cuboids.get(i));
 					i++;
 				}
@@ -118,9 +129,19 @@ public class BUC {
 			int end_shared_sort = i -  1;
 			i = end_shared_sort;
 			
+			
+			
 			if (start_shared_sort == end_shared_sort){
+				Collections.sort(tuples, new Comparator<Tuple>(){
+					@Override
+					public int compare(Tuple tuple1,
+							Tuple tuple2) {
+						return Tuple.compareTo(tuple1, tuple2, numPresentation, dim);
+					}});
+				
 				aggregateSortOrder(tuples, numPresentation, dim);
 			}else{
+				
 				Collections.sort(tuples, new Comparator<Tuple>(){
 					@Override
 					public int compare(Tuple tuple1,
@@ -139,9 +160,7 @@ public class BUC {
 				for (int j = 0; j < tuples.size(); j++){
 					if (Tuple.compareTo(tempTuple, tuples.get(j), numPresentation, 0, dim) != 0){
 						if (partition.size() > 0){
-							for(int t = start_shared_sort; t <= end_shared_sort; t++){
-								buc(partition, newCuboids, dim + 1);
-							}
+							buc(partition, newCuboids, dim + 1);
 							partition.clear();
 						}
 					}
@@ -172,7 +191,7 @@ public class BUC {
 				sum = 0;
 			}
 			
-			sum = sum + tuple.value.get();
+			sum = sum + tuple.value;
 			prevTuple = tuple;
 			
 		}
@@ -192,7 +211,7 @@ public class BUC {
 				sum = 0;
 			}
 			
-			sum = sum + tuple.value.get();
+			sum = sum + tuple.value;
 			prevTuple = tuple;
 			
 		}
@@ -207,45 +226,39 @@ public class BUC {
 			tempTuple.fields[index] = tuple.fields[index];
 		}
 		
-		System.out.println(tempTuple + "\t" + sum);
+		if (context == null){
+			System.out.println(Utils.joinI(sortOrder, "") + ":\t\t" + tempTuple + "\t" + sum);
+		}
+		else{
+			long_writable.set(sum);
+			try{
+				//System.out.println(Utils.joinI(sortOrder, "") + ":\t\t" + tempTuple + "\t" + sum);
+				context.write(tempTuple, long_writable);
+			}catch (Exception ex){
+				
+			}
+		}
 	}
 	
 	private void findSortOrder(){
-		List<List<Integer>> numPresentations = new ArrayList<List<Integer>>();
-		
 		int size = cuboids.size();
-		
-		for(int i = 0; i < size; i++)
-			numPresentations.add(cuboids.get(i).numPresentation);
 		
 		for(int i = 0; i < size - 1; i++)
 			for(int j = i + 1; j < size; j++){
-				if (compareNumerically(numPresentations.get(i), numPresentations.get(j)) == 1){
-					List<Integer> temp = numPresentations.get(i);
-					numPresentations.set(i, numPresentations.get(j));
-					numPresentations.set(j, temp);
+				if (compareNumerically(cuboids.get(i).numPresentation, cuboids.get(j).numPresentation) == 1){
+
+					Cuboid tmpCuboid = cuboids.get(i);
+					cuboids.set(i, cuboids.get(j));
+					cuboids.set(j, tmpCuboid);
 				}
 			}
 		
-		for(int i = 0; i < size; i++){
-			System.out.println(Utils.joinI(numPresentations.get(i), ""));
-		}
+//		for(int i = 0; i < size; i++){
+//			System.out.println(Utils.joinI(numPresentations.get(i), ""));
+//		}
 	}
 	
-	public void printSortSegments(List<SortSegment> sortSegments){
-		for(SortSegment ss: sortSegments){
-			
-			System.out.println("Need Aggregate Shared Sort: " + ss.isNeedAggregateSharedSort);
-			System.out.println("Shared: " + Utils.joinI(ss.sharedSort, ""));
-			
-			for(List<Integer> sortOrder: ss.sortOrder){
-				System.out.println("Sort order: " + Utils.joinI(sortOrder, ""));
-			}
-			System.out.println();
-		}
-		
-		System.out.println("-------------------------------");
-	}
+
 	private static int compareNumerically(List<Integer> a, List<Integer> b){
 		int size_a = a.size();
 		int size_b = b.size();

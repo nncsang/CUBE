@@ -15,7 +15,7 @@ public class MRCubeCombiner extends Reducer<Segment,
 									LongWritable> {
 
 	public MRCubeCombiner() {
-	
+		//System.out.println("COMBINER");
 	}
 	
 	@Override
@@ -26,5 +26,6 @@ public class MRCubeCombiner extends Reducer<Segment,
 		    sum += lw.get();
 		}
 		context.write(key, new LongWritable(sum));
+		//System.out.println(key);
 	}
 }

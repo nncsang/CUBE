@@ -43,10 +43,10 @@ public class MRCube extends Configured implements Tool{
 	
 	public MRCube(String[] args) {
 		if (args.length != 4) {
-			System.out
-					.println("Usage: MRCube <input_path> <output_path> <num_reducers> <tuple_length>");
+			System.out.println("Usage: MRCube <input_path> <output_path> <num_reducers> <tuple_length>");
 			System.exit(0);
 		}
+		
 		this.inputPath = new Path(args[0]);
 		this.outputDir = new Path(args[1]);
 		this.numReducers = Integer.parseInt(args[2]);
@@ -105,7 +105,7 @@ public class MRCube extends Configured implements Tool{
 		// set the jar class
 		job.setJarByClass(MRCube.class);
 		
-		 String[] attributes = new String[this.tupleLength];
+		String[] attributes = new String[this.tupleLength];
 			
 		for(int i = 0; i < this.tupleLength; i++)
 			attributes[i] = Integer.toString(i);
@@ -115,11 +115,12 @@ public class MRCube extends Configured implements Tool{
 		
 		/** for testing */
 		cuboids.get(0).setFriendly(false);
-		cuboids.get(1).setFriendly(false);
+		cuboids.get(2).setFriendly(false);
+		cuboids.get(3).setFriendly(false);
 		
-		cube.printCuboids();
+		//cube.printCuboids();
 		cube.batching();
-		cube.printBatches();
+		//cube.printBatches();
 		
 		String friendlyBatches = "";
 		String unfriendlyBatches = "";
@@ -134,9 +135,19 @@ public class MRCube extends Configured implements Tool{
 		
 		List<BUC> bucs = new ArrayList<BUC>();
 		
+		List<List<Integer>> partitionOrder = new ArrayList<List<Integer>>();
+		
 		for(Batch batch: cube.friendlyBatches){
-			bucs.add(new BUC(batch));
+			BUC buc = new BUC(batch);
+			//batch.print();
+			//buc.print();
+			//System.out.println(Utils.joinI(batch.cuboids.get(0).numPresentation, ""));
+			bucs.add(buc);
+			partitionOrder.add(batch.cuboids.get(0).numPresentation);
 		}
+		
+		Segment.partitionOrder = partitionOrder;
+		Segment.updateSortOrder();
 		
 		String bucsStr = "";
 		for(int i = 0; i < bucs.size() - 1; i++){
@@ -146,11 +157,12 @@ public class MRCube extends Configured implements Tool{
 		bucsStr += bucs.get(bucs.size() - 1).convertToString();
 		
 		
-		job.getConfiguration().set("friendlyBatches", friendlyBatches);
+		job.getConfiguration().set("nBatch", Integer.toString(bucs.size()));
 		job.getConfiguration().set("unfriendlyBatches", unfriendlyBatches);
 		job.getConfiguration().set("bucsStr", bucsStr);
 		
 		job.waitForCompletion(true);
+		Checker.main(null);
 		return 0;
 	}
 }

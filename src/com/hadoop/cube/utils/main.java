@@ -19,7 +19,8 @@ import com.hadoop.cube.data_writable.Tuple;
 public class main {
 	static public void main(String[] args){
 		int pivot = 3;
-		String[] attributes = {"A", "B", "C", "D"};
+		Tuple.setLength(6);
+		String[] attributes = {"A", "B", "C", "D", "E", "F"};
 		//String[] attributes = {"1", "2", "3", "4", "5", "6"};
 		//String[] attributes = {"y", "m", "d", "h", "mm"};
 		//String[] attributes = {"y", "m", "d", "h"};
@@ -27,24 +28,43 @@ public class main {
 		CubeLattice cube = new CubeLattice(attributes);
 		List<Cuboid> cuboids = cube.cuboids();
 		cuboids.get(0).setFriendly(false);
-		cuboids.get(0).setPartitionFactor(10);
 		cuboids.get(1).setFriendly(false);
-		cuboids.get(4).setFriendly(false);
-		cuboids.get(8).setFriendly(false);
 		
 		cube.printCuboids();
 		cube.batching();
 		cube.printBatches();
 		
-		Tuple.setLength(4);
-		BUC buc = new BUC(cube.friendlyBatches.get(2));
-		Tuple tuple1 = new Tuple(1,1,2,3);
-		Tuple tuple2 = new Tuple(1,1,2,3);
-		Tuple tuple3 = new Tuple(1,2,2,3);
 		
-		buc.addTuple(tuple1, new LongWritable(2));
-		buc.addTuple(tuple2, new LongWritable(3));
-		buc.addTuple(tuple3, new LongWritable(4));
+		BUC buc = new BUC(cube.friendlyBatches.get(2));
+		buc.print();
+		List<Tuple> tuples = new ArrayList<Tuple>();
+		
+//		tuples.add(new Tuple(1987,	-1,	14,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	-1,	15,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	-1,	17,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	-1,	18,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	14,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	15,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	17,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	18,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	19,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	21,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	22,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	23,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	24,	1451,	81856,	82012));
+		tuples.add(new Tuple(1987,	10,	25,	1451,	81856,	82012));
+		
+//		tuples.add(new Tuple(1987,	-1,	21,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	-1,	22,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	-1,	23,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	-1,	24,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	-1,	25,	1451,	81856,	82012));
+		
+		
+		for(Tuple tuple: tuples){
+			buc.addTuple(tuple, 1);
+		}
+		
 		buc.finish();
 		
 		//cube.printStructure();

@@ -2,6 +2,7 @@ package com.hadoop.cube.mrcube;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,41 +23,33 @@ import com.hadoop.cube.data_writable.Tuple;
 
 public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWritable> { 
 	
-	List<Batch> friendlyBatches;
-	List<Batch> unfriendlyBatches;
-
+	
+	Segment segment;
+	public int nBatch;
+	public static int[] nullArray;
+	
 	@Override
     protected void setup(org.apache.hadoop.mapreduce.Mapper<Tuple, LongWritable, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
+        
+        //System.out.println("MAPPER:");
         Configuration conf = context.getConfiguration();
         
-        String[] friendlyBatchStr = conf.get("friendlyBatches").split("=");
-        String[] unfriendlyBatchStr = conf.get("unfriendlyBatches").split("=");
+        nBatch = Integer.parseInt(conf.get("nBatch"));
+         
         
-        friendlyBatches = new ArrayList<Batch>();
-        unfriendlyBatches = new ArrayList<Batch>();
-        
-        for(String batch: friendlyBatchStr){
-        	friendlyBatches.add(new Batch(batch));
-        }
-        
-        for(String batch: unfriendlyBatchStr){
-        	unfriendlyBatches.add(new Batch(batch));
-        }
-        
-        for(Batch batch: friendlyBatches){
-        	batch.print();
-        }
-        
-        for(Batch batch: unfriendlyBatches){
-        	batch.print();
-        }
     }
 
     @Override
-	protected void map(Tuple key, 
-	        LongWritable value,
-			Context context) throws IOException, InterruptedException {
+	protected void map(Tuple key, LongWritable value, Context context) throws IOException, InterruptedException {
     	
+    	//System.out.println(key);
+    	for (int i = 0; i < nBatch; i++){
+    		segment = new Segment(i, key.fields);
+    		context.write(segment, value);
+    		//System.out.println(segment);
+    	}
+    	
+    	//System.out.println("---------------------------------");
     }
 }

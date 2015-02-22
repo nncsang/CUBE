@@ -14,7 +14,7 @@ public class Tuple implements WritableComparable<Tuple> {
     public static int length = 0;
     public static int NullValue = -1;
     public int[] fields = null;
-    public LongWritable value = new LongWritable(0);
+    public long value = 0;
     
     /*Called before creating any instances*/
     public static void setLength(int length){
