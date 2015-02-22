@@ -148,8 +148,8 @@ class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>
 		
 		int size = regions.size();
 		for(int i = 0; i < size; i++){
-			if (i == 0 || i == 2 || i == 3)
-				continue;
+//			if (i == 0 || i == 2 || i == 3)
+//				continue;
 			Cuboid region = regions.get(i);
 			String[] attributes = region.getAttributes();
 			int length = attributes.length;
@@ -157,7 +157,7 @@ class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>
 			Tuple key = new Tuple();
 			for(int j = 0; j < length; j++){
 				if (attributes[j].equals(GlobalSettings.ALL)){
-					key.fields[j] = AirlineWritable.NullValue;
+					key.fields[j] = Tuple.NullValue;
 				}else{
 					key.fields[j] = value.fields[j];
 				}

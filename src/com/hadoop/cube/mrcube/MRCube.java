@@ -114,9 +114,9 @@ public class MRCube extends Configured implements Tool{
 		List<Cuboid> cuboids = cube.cuboids();
 		
 		/** for testing */
-		cuboids.get(0).setFriendly(false);
-		cuboids.get(2).setFriendly(false);
-		cuboids.get(3).setFriendly(false);
+//		cuboids.get(0).setFriendly(false);
+//		cuboids.get(2).setFriendly(false);
+//		cuboids.get(3).setFriendly(false);
 		
 		//cube.printCuboids();
 		cube.batching();
@@ -131,13 +131,15 @@ public class MRCube extends Configured implements Tool{
 		
 		for(int i = 0; i < cube.unfriendlyBatches.size() - 1; i++)
 			unfriendlyBatches += cube.unfriendlyBatches.get(i).convertToString() + "=";
-		unfriendlyBatches += cube.unfriendlyBatches.get(cube.unfriendlyBatches.size() - 1).convertToString();
+		if (cube.unfriendlyBatches.size() >= 1)
+			unfriendlyBatches += cube.unfriendlyBatches.get(cube.unfriendlyBatches.size() - 1).convertToString();
 		
 		List<BUC> bucs = new ArrayList<BUC>();
 		
 		List<List<Integer>> partitionOrder = new ArrayList<List<Integer>>();
 		
 		for(Batch batch: cube.friendlyBatches){
+			/** CHECK THIS OUT for root is friendly**/
 			BUC buc = new BUC(batch);
 			//batch.print();
 			//buc.print();

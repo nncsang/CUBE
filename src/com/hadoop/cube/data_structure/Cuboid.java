@@ -60,9 +60,18 @@ public class Cuboid implements Comparable<Cuboid>{
 		this.level = -1;
 		this.numPresentation = new ArrayList<Integer>();
 		
+		boolean isRoot = true;
 		for(int i = 0; i < this.attributes.length; i++)
-			if (this.attributes[i].compareTo(GlobalSettings.ALL) != 0)
+			if (this.attributes[i].compareTo(GlobalSettings.ALL) != 0){
 				numPresentation.add(i);
+				isRoot = false;
+			}
+		
+		/** CHECK THIS OUT **/
+//		if (isRoot == true){
+//			for(int i = 0; i < this.attributes.length; i++)
+//				numPresentation.add(i);
+//		}
 	}
 	
 	@Override

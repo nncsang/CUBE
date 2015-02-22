@@ -134,6 +134,13 @@ public class CubeLattice {
 			
 			// find initial batches
 			initializingBatchArea(root);
+			
+		}else{
+			Batch friendlyBatch = new Batch();
+			friendlyBatch.isFriendly = true;
+			friendlyBatch.cuboids.add(root);
+			friendlyBatches.add(friendlyBatch);
+			root.isBatched = true;
 		}
 		
 		fillFriendlyBatchesBFS(root);

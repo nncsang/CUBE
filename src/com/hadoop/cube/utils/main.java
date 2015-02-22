@@ -27,15 +27,15 @@ public class main {
 		//String[] attributes = {"A", "B", "C"};
 		CubeLattice cube = new CubeLattice(attributes);
 		List<Cuboid> cuboids = cube.cuboids();
-		cuboids.get(0).setFriendly(false);
-		cuboids.get(1).setFriendly(false);
+		//cuboids.get(0).setFriendly(false);
+		//cuboids.get(1).setFriendly(false);
 		
 		cube.printCuboids();
 		cube.batching();
 		cube.printBatches();
 		
 		
-		BUC buc = new BUC(cube.friendlyBatches.get(2));
+		BUC buc = new BUC(cube.friendlyBatches.get(0));
 		buc.print();
 		List<Tuple> tuples = new ArrayList<Tuple>();
 		

@@ -227,7 +227,7 @@ public class BUC {
 		}
 		
 		if (context == null){
-			System.out.println(Utils.joinI(sortOrder, "") + ":\t\t" + tempTuple + "\t" + sum);
+			//System.out.println(Utils.joinI(sortOrder, "") + ":\t\t" + tempTuple + "\t" + sum);
 		}
 		else{
 			long_writable.set(sum);
