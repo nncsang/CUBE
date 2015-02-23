@@ -17,6 +17,8 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
@@ -33,7 +35,6 @@ import com.hadoop.cube.settings.GlobalSettings;
 import com.hadoop.cube.utils.Checker;
 import com.hadoop.cube.utils.Utils;
 
-
 public class MRCube extends Configured implements Tool{
 	private int numReducers;
 	private Path inputPath;
@@ -42,7 +43,9 @@ public class MRCube extends Configured implements Tool{
 	private int reducerLimit;
 	private int dataSize;
 	public static void main(String args[]) throws Exception {
-		int res = ToolRunner.run(new Configuration(), new MRCube(args), args);
+		int res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
+		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
+		res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
 	}
 	
@@ -63,57 +66,117 @@ public class MRCube extends Configured implements Tool{
 
 	@Override
 	public int run(String[] arg0) throws Exception {
+	
+		/** Final Aggregation Job **/
+		Configuration conf = this.getConf();
+		Job aggregating_job = new Job(conf, "FinalAggregation"); 
+        
+		FileSystem fs = FileSystem.get(conf);
+		if(fs.exists(outputDir)){
+			fs.delete(outputDir, true);
+		}
 		
-		/** ESTIMATE PHASE **/
+        // set job input format
+		aggregating_job.setInputFormatClass(SequenceFileInputFormat.class);
+
+        // set map class and the map output key and value classes
+		aggregating_job.setMapperClass(MRCubeAggregateMapper.class);
+		aggregating_job.setMapOutputKeyClass(Tuple.class);
+		aggregating_job.setMapOutputValueClass(LongWritable.class);
+        
+		aggregating_job.setPartitionerClass(MRCubeAggregatePartitioner.class);
+
+        // set reduce class and the reduce output key and value classes
+		aggregating_job.setCombinerClass(MRCubeAggregateCombiner.class);
+		aggregating_job.setReducerClass(MRCubeAggregateReducer.class);
+        
+        //job.setSortComparatorClass(TimestampWritable.Comparator.class);
+
+        // set job output format
+		aggregating_job.setOutputKeyClass(Tuple.class);
+		aggregating_job.setOutputValueClass(LongWritable.class);
+		aggregating_job.setOutputFormatClass(TextOutputFormat.class);
+        
+        //job.setCombinerClass(ChainedCombiner.class);
+        
+
+        // add the input file as job input (from HDFS) to the variable
+        // inputFile
+        FileInputFormat.addInputPath(aggregating_job, new Path("output_mrcube_intermediate/part*"));
+
+        // set the output path for the job results (to HDFS) to the
+        // variable
+        // outputPath
+        FileOutputFormat.setOutputPath(aggregating_job, outputDir);
+
+        // set the number of reducers using variable numberReducers
+        aggregating_job.setNumReduceTasks(this.numReducers);
+
+        // set the jar class
+        aggregating_job.setJarByClass(MRCube.class);
+
+        aggregating_job.waitForCompletion(true);
+		Checker.main(null);
+		return 0;
+	}
+}
+
+class MRCubeEstimate extends Configured implements Tool{
+	
+	private int numReducers;
+	private Path inputPath;
+	private Path outputDir;
+	private int tupleLength;
+	private int reducerLimit;
+	private int dataSize;
+	
+	public MRCubeEstimate(String[] args) {
+		if (args.length != 6) {
+			System.out.println("Usage: MRCube <input_path> <output_path> <num_reducers> <tuple_length> <reducer_limit> <data_size>");
+			System.exit(0);
+		}
+		
+		this.inputPath = new Path(args[0]);
+		this.outputDir = new Path("output_mrcube_estimate");
+		this.numReducers = Integer.parseInt(args[2]);
+		this.tupleLength = Integer.parseInt(args[3]);
+		this.reducerLimit = Integer.parseInt(args[4]);
+		this.dataSize = Integer.parseInt(args[5]);
+		Tuple.setLength(tupleLength);
+	}
+	
+	@Override
+	public int run(String[] arg0) throws Exception {
 		Configuration conf = this.getConf();
 		Job estimateJob = new Job(conf, "MRCubeEstimate"); 
 		
-		// set job input format
 		estimateJob.setInputFormatClass(SequenceFileInputFormat.class);
-
-		// set map class and the map output key and value classes
+		
 		estimateJob.setMapperClass(MRCubeEstimateMapper.class);
 		estimateJob.setMapOutputKeyClass(Segment.class);
 		estimateJob.setMapOutputValueClass(LongWritable.class);
 		
 		estimateJob.setPartitionerClass(MRCubeEstimatePartitioner.class);
-		//job.setSortComparatorClass(IRGPlusIRGSorter.class);
 		
-		// set reduce class and the reduce output key and value classes
 		estimateJob.setReducerClass(MRCubeEstimateReducer.class);
 		
-		//job.setSortComparatorClass(TimestampWritable.Comparator.class);
-
-		// set job output format
 		estimateJob.setOutputKeyClass(LongWritable.class);
 		estimateJob.setOutputValueClass(Text.class);
 		estimateJob.setOutputFormatClass(TextOutputFormat.class);
 		
 		estimateJob.setCombinerClass(MRCubeEstimateCombiner.class);
 		
-		// add the input file as job input (from HDFS) to the variable
-		// inputFile
 		FileInputFormat.addInputPath(estimateJob, inputPath);
 
-		// set the output path for the job results (to HDFS) to the
-		// variable
-		// outputPath
-		//if file output is existed, delete it
 		FileSystem fs = FileSystem.get(conf);
 		
-		Path output_estimate = new Path("output_estimate");
-		if(fs.exists(output_estimate)){
-			fs.delete(output_estimate, true);
+		if(fs.exists(outputDir)){
+			fs.delete(outputDir, true);
 		}
 				
-		FileOutputFormat.setOutputPath(estimateJob, output_estimate);
+		FileOutputFormat.setOutputPath(estimateJob, outputDir);
 
-		// set the number of reducers using variable numberReducers
 		estimateJob.setNumReduceTasks(this.numReducers);
-
-		// set the jar class
-		
-		
 		
 		String[] attributes = new String[this.tupleLength];
 		
@@ -144,9 +207,8 @@ public class MRCube extends Configured implements Tool{
 		estimateJob.setJarByClass(MRCubeEstimate.class);
 		estimateJob.waitForCompletion(true);
 		
-		
 		try{
-	        FileStatus[] status = fs.listStatus(output_estimate);
+	        FileStatus[] status = fs.listStatus(outputDir);
 	 
 	        for (int i = 0; i < status.length; i++){
 	 
@@ -155,7 +217,7 @@ public class MRCube extends Configured implements Tool{
 	            line=brIn.readLine();
 	 
 	            while (line != null){
-	            	System.out.println(line);
+	            	//System.out.println(line);
 	            	String[] parts = line.split("\t");
 	            	int id = Integer.parseInt(parts[0]);
 	            	
@@ -177,13 +239,6 @@ public class MRCube extends Configured implements Tool{
 	        System.out.println(e.toString());
 	    }
 		
-		
-		
-		System.out.println("Expected Sampling Size : " + expectedSamplingSize);
-		System.out.println("Real Sampling Size: " + realSamplingSize);
-		System.out.println("Sampling Reducer Limit: " + reducerLimitForSampling);
-		
-		
 		/** for testing */
 		if (cuboids.get(0).isFriendly == true){
 			cuboids.get(0).setFriendly(false);
@@ -193,15 +248,39 @@ public class MRCube extends Configured implements Tool{
 			cuboids.get(1).setPartitionFactor(3);
 		}
 		
-//		cuboids.get(0).setFriendly(false);
-//		cuboids.get(2).setFriendly(false);
-//		cuboids.get(3).setFriendly(false);
-		
-		//cube.printCuboids();
 		cube.batching();
-		//cube.printBatches();
+		GlobalSettings.cube = cube;
+		return 0;
+	}
+}
+
+class MRCubeIntermediate extends Configured implements Tool{
+	private int numReducers;
+	private Path inputPath;
+	private Path outputDir;
+	private int tupleLength;
+	private int reducerLimit;
+	private int dataSize;
+	
+	public MRCubeIntermediate(String[] args) {
+		if (args.length != 6) {
+			System.out.println("Usage: MRCube <input_path> <output_path> <num_reducers> <tuple_length> <reducer_limit> <data_size>");
+			System.exit(0);
+		}
 		
-		/** MAIN PHASE **/
+		this.inputPath = new Path(args[0]);
+		this.outputDir = new Path("output_mrcube_intermediate");
+		this.numReducers = Integer.parseInt(args[2]);
+		this.tupleLength = Integer.parseInt(args[3]);
+		this.reducerLimit = Integer.parseInt(args[4]);
+		this.dataSize = Integer.parseInt(args[5]);
+		Tuple.setLength(tupleLength);
+	}
+	
+	@Override
+	public int run(String[] arg0) throws Exception {
+		
+		Configuration conf = this.getConf();
 		Job job = new Job(conf, "MRCube"); 
 		
 		// set job input format
@@ -223,7 +302,7 @@ public class MRCube extends Configured implements Tool{
 		// set job output format
 		job.setOutputKeyClass(Tuple.class);
 		job.setOutputValueClass(LongWritable.class);
-		job.setOutputFormatClass(TextOutputFormat.class);
+		job.setOutputFormatClass(SequenceFileOutputFormat.class);
 		
 		job.setCombinerClass(MRCubeCombiner.class);
 		
@@ -236,27 +315,24 @@ public class MRCube extends Configured implements Tool{
 		// outputPath
 		//if file output is existed, delete it
 		
+		FileSystem fs = FileSystem.get(conf);
+		
 		if(fs.exists(outputDir)){
 			fs.delete(outputDir, true);
 		}
-				
+		
+		CubeLattice cube = GlobalSettings.cube;
+		
+		MultipleOutputs.addNamedOutput(job, "tmp", SequenceFileOutputFormat.class, Tuple.class, LongWritable.class);
 		FileOutputFormat.setOutputPath(job, outputDir);
 
 		// set the number of reducers using variable numberReducers
 		job.setNumReduceTasks(this.numReducers);
 
 		// set the jar class
-		job.setJarByClass(MRCube.class);
+		job.setJarByClass(MRCubeIntermediate.class);
 		
-		
-		String friendlyBatches = "";
 		String unfriendlyBatches = "";
-		
-		for(int i = 0; i < cube.friendlyBatches.size() - 1; i++)
-			friendlyBatches += cube.friendlyBatches.get(i).convertToString() + "=";
-		if (cube.unfriendlyBatches.size() >= 1)
-			friendlyBatches += cube.friendlyBatches.get(cube.friendlyBatches.size() - 1).convertToString();
-		
 		for(int i = 0; i < cube.unfriendlyBatches.size() - 1; i++)
 			unfriendlyBatches += cube.unfriendlyBatches.get(i).convertToString() + "=";
 		if (cube.unfriendlyBatches.size() >= 1)
@@ -292,7 +368,9 @@ public class MRCube extends Configured implements Tool{
 		job.getConfiguration().set("bucsStr", bucsStr);
 		
 		job.waitForCompletion(true);
-		Checker.main(null);
+		
+		
 		return 0;
 	}
 }
+

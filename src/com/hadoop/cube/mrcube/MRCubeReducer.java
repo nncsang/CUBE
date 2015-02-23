@@ -98,10 +98,11 @@ public class MRCubeReducer extends Reducer<Segment,
 	
 			currBUC.addTuple(tuple, sum);
 		}else{
+			//System.out.println(segment + "\t" + sum);
 			if (prevId != segment.id){
 				if (prevId != 0){
 					long_writable.set(SUM);
-					context.write(segment.tuple, long_writable);	
+					context.write(prevTuple, long_writable);	
 				}
 				
 				SUM = 0;
@@ -109,7 +110,7 @@ public class MRCubeReducer extends Reducer<Segment,
 			}else{
 				if (prevTuple.compareTo(tuple) != 0){
 					long_writable.set(SUM);
-					context.write(segment.tuple, long_writable);
+					context.write(prevTuple, long_writable);
 					SUM = 0;
 				}
 			}

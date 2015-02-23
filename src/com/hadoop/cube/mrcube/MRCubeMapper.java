@@ -64,6 +64,7 @@ public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWrita
     			}
     		}
     		
+    		//System.out.println("MAPPER: \t" + segment + "\t" + value);
     		context.write(segment, value);
     	}
     	
