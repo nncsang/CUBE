@@ -26,8 +26,9 @@ public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWrita
 	
 	Segment segment;
 	public int nBatch;
-	public static int[] nullArray;
-	
+	public int[] nullArray;
+	public List<Batch> unfriendlyBatches;
+	public Tuple tuple;
 	@Override
     protected void setup(org.apache.hadoop.mapreduce.Mapper<Tuple, LongWritable, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
@@ -36,12 +37,35 @@ public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWrita
         Configuration conf = context.getConfiguration();
         
         nBatch = Integer.parseInt(conf.get("nBatch"));
-         
+        String[] strs = conf.get("unfriendlyBatches").split("=");
         
+        unfriendlyBatches = new ArrayList<Batch>();
+        for(String str: strs){
+        	Batch batch = new Batch(str);
+        	unfriendlyBatches.add(batch);
+        	Segment.partitionFactor.add(batch.partition_factor);
+        }
+        
+        nullArray = new int[Tuple.length];
+        Arrays.fill(nullArray, -1);
     }
 
     @Override
 	protected void map(Tuple key, LongWritable value, Context context) throws IOException, InterruptedException {
+    	
+    	for(int i = 0; i < unfriendlyBatches.size(); i++){
+    		Cuboid cuboid = unfriendlyBatches.get(i).cuboids.get(0);
+    		
+    		segment = new Segment(-i - 1, nullArray);
+    		if (cuboid.numPresentation != null){
+    			for(int j = 0; j < cuboid.numPresentation.size(); j++){
+    				int index = cuboid.numPresentation.get(j);
+    				segment.tuple.fields[index] = key.fields[index];
+    			}
+    		}
+    		
+    		context.write(segment, value);
+    	}
     	
     	//System.out.println(key);
     	for (int i = 0; i < nBatch; i++){

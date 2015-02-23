@@ -16,9 +16,11 @@ public class Segment implements WritableComparable<Segment> {
     
 	public int id;
 	public Tuple tuple;
+	
 	public static List<Batch> batch;
 	public static List<List<Integer>> partitionOrder = new ArrayList<List<Integer>>();
 	public static List<List<Integer>> sortOrder = new ArrayList<List<Integer>>();
+	public static List<Integer> partitionFactor = new ArrayList<Integer>();
 	
 	public static void updateSortOrder(){
 		for(List<Integer> list: partitionOrder){
@@ -64,7 +66,7 @@ public class Segment implements WritableComparable<Segment> {
     	if (obj == null)
     		return -1;
     	
-	    if (obj.id == -1 || obj.tuple == null)
+	    if (obj.tuple == null)
 	    	return -1;
 	    	
 	    if (this.id < obj.id)
@@ -73,7 +75,7 @@ public class Segment implements WritableComparable<Segment> {
 	    if (this.id > obj.id)
 	    	return 1;
 	    
-	    if (sortOrder.size() == 0)
+	    if (sortOrder.size() == 0 || obj.id < 0)
 	    	return this.tuple.compareTo(obj.tuple);
 	    else
 	    	return Tuple.compareTo(this.tuple, obj.tuple, sortOrder.get(id));
@@ -107,7 +109,7 @@ public class Segment implements WritableComparable<Segment> {
   	      if (id1 > id2)
   	    	return 1;
   	      
-  	      if (sortOrder.size() == 0){
+  	      if (sortOrder.size() == 0 || id1 < 0){
 		      for (int i = 1; i <= Tuple.length; i++) {
 		        	  
 		         id1 = readInt(b1, s1 + i * 4);

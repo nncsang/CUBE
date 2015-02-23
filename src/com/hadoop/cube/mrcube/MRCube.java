@@ -136,10 +136,10 @@ public class MRCube extends Configured implements Tool{
 		
 		/** Compute random rate **/
 		int nNeededTuple = (int)(100 * this.dataSize/ this.reducerLimit);
-		GlobalSettings.RANDOM_RATE = (int) (nNeededTuple / (float) this.dataSize) * 100 + 10;
+		GlobalSettings.RANDOM_RATE = (int) (nNeededTuple / (float) this.dataSize) * 100 + 5;
 		int expectedSamplingSize = (int) (this.dataSize * GlobalSettings.RANDOM_RATE / 100.0);
 		int realSamplingSize = 0;
-		
+		int reducerLimitForSampling = 0;
 		
 		estimateJob.setJarByClass(MRCubeEstimate.class);
 		estimateJob.waitForCompletion(true);
@@ -160,12 +160,14 @@ public class MRCube extends Configured implements Tool{
 	            	int id = Integer.parseInt(parts[0]);
 	            	
 	            	int maxTuple = Integer.parseInt(parts[1]);
-	            	if (id == 0)
+	            	if (id == 0){
 	            		realSamplingSize = maxTuple;
+	            		reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * realSamplingSize;
+	            	}
 	            	
-	            	if (maxTuple > this.reducerLimit){
+	            	if (maxTuple > reducerLimitForSampling){
 	            		cuboids.get(id).setFriendly(false);
-	            		cuboids.get(id).setPartitionFactor(maxTuple);
+	            		cuboids.get(id).setPartitionFactor((int) (maxTuple / (float) reducerLimitForSampling) + 1);
 	            	}
 	                line=brIn.readLine();
 	            }
@@ -175,23 +177,20 @@ public class MRCube extends Configured implements Tool{
 	        System.out.println(e.toString());
 	    }
 		
-		int reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * realSamplingSize;
+		
 		
 		System.out.println("Expected Sampling Size : " + expectedSamplingSize);
 		System.out.println("Real Sampling Size: " + realSamplingSize);
 		System.out.println("Sampling Reducer Limit: " + reducerLimitForSampling);
 		
-		for(Cuboid cuboid: cuboids){
-			if (cuboid.isFriendly == false){
-				int maxTuple = cuboid.partition_factor;
-				cuboid.partition_factor = (int) (maxTuple / (float) reducerLimitForSampling) + 1;
-			}
-		}
 		
 		/** for testing */
 		if (cuboids.get(0).isFriendly == true){
 			cuboids.get(0).setFriendly(false);
 			cuboids.get(0).setPartitionFactor(2);
+			
+			cuboids.get(1).setFriendly(false);
+			cuboids.get(1).setPartitionFactor(3);
 		}
 		
 //		cuboids.get(0).setFriendly(false);
@@ -292,10 +291,8 @@ public class MRCube extends Configured implements Tool{
 		job.getConfiguration().set("unfriendlyBatches", unfriendlyBatches);
 		job.getConfiguration().set("bucsStr", bucsStr);
 		
-		
-		
 		job.waitForCompletion(true);
-		//Checker.main(null);
+		Checker.main(null);
 		return 0;
 	}
 }

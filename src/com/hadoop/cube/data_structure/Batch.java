@@ -29,13 +29,13 @@ public class Batch {
 			cuboids.add(new Cuboid(cuboidStr[i]));
 		}
 		
-		lowestAttributes = new ArrayList<Integer>();
-		String[] attrs = parts[2].split(";");
-		for(String attr: attrs){
-			lowestAttributes.add(Integer.parseInt(attr));
-		}
+//		lowestAttributes = new ArrayList<Integer>();
+//		String[] attrs = parts[2].split(";");
+//		for(String attr: attrs){
+//			lowestAttributes.add(Integer.parseInt(attr));
+//		}
 		
-		if (parts[3].compareTo("0") == 0){	
+		if (parts[2].compareTo("0") == 0){	
 			isFriendly = false;
 		}else{
 			isFriendly = true;
@@ -49,7 +49,7 @@ public class Batch {
 			str += cuboids.get(i).convertToString() + ";";
 		}
 		str += cuboids.get(cuboids.size() - 1).convertToString() + ",";
-		str += Utils.joinI(lowestAttributes, ";") + ",";
+		//str += Utils.joinI(lowestAttributes, ";") + ",";
 		if (isFriendly == false)
 			str += "0";
 		else

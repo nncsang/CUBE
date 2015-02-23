@@ -41,17 +41,25 @@ public class MRCubePartitioner extends Partitioner<Segment, LongWritable> implem
     public int getPartition(Segment segment, LongWritable value, int numReduceTasks) {
     	
     	Tuple key = segment.tuple;
-  
     	m.reset();
         m.update(ByteBuffer.allocate(4).putInt(segment.id).array());
         
-        List<Integer> partitionOrder = Segment.partitionOrder.get(segment.id);
-        
-        for (i = 0; i < partitionOrder.size(); i++) {
-        	m.update(ByteBuffer.allocate(4).putInt(key.fields[partitionOrder.get(i)]).array());
-        }
-        
-        //System.out.println(segment + " " + (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks);
-        return (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks;
+    	if (segment.id >= 0){
+	        List<Integer> partitionOrder = Segment.partitionOrder.get(segment.id);
+	        
+	        for (i = 0; i < partitionOrder.size(); i++) {
+	        	m.update(ByteBuffer.allocate(4).putInt(key.fields[partitionOrder.get(i)]).array());
+	        }
+	        
+	        //System.out.println(segment + " " + (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks);
+	        return (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks;
+    	}else{
+    		for(int i = 0; i < Tuple.length; i++)
+    			m.update(ByteBuffer.allocate(4).putInt(key.fields[i]).array());
+    		
+    		m.update(ByteBuffer.allocate(4).putInt((int)value.get()).array());
+    		return ((m.digest()[15] & Integer.MAX_VALUE) % Segment.partitionFactor.get(-segment.id -1)) % numReduceTasks;
+    	}
+    		
     }
 }

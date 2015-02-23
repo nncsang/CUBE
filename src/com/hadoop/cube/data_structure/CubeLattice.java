@@ -325,10 +325,14 @@ public class CubeLattice {
 			}else if (child.isFriendly == false){
 				
 				int index = -1;
+				
+				/** TODO: implement this corner case **/
+				/*
 				for (int j = 0; j < unfriendlyBatches.size(); j++){
 					if (unfriendlyBatches.get(j).partition_factor == child.partition_factor)
 						index = j;
 				}
+				*/
 				
 				if (index == -1){
 					Batch unfriendlyBatch = new Batch();
