@@ -43,7 +43,12 @@ public class MRCubeEstimateMapper extends Mapper<Tuple, LongWritable, Segment, L
 
     @Override
 	protected void map(Tuple value, LongWritable index, Context context) throws IOException, InterruptedException {
-    	//System.out.println(key);
+    	//System.out.println(value);
+    	
+    	int random = Utils.randInt(0, 100);
+    	if (random > GlobalSettings.RANDOM_RATE)
+    		return;
+    	
     	int size = regions.size();
 		for(int i = 0; i < size; i++){
 			Cuboid region = regions.get(i);

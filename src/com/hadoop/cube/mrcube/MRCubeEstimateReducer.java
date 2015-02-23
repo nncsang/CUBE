@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
@@ -22,11 +23,15 @@ import com.hadoop.cube.utils.Utils;
 
 public class MRCubeEstimateReducer extends Reducer<Segment,
 											LongWritable, 
-											Tuple, 
-											LongWritable> { 
+											LongWritable, 
+											Text> { 
 	
 	public static LongWritable one = new LongWritable(1);
 	public static LongWritable zero = new LongWritable(0);
+	public int prevCuboidId = -1;
+	public Tuple preTuple = null;
+	public long currMax = -1;
+	public long currSum = 0;
 	
 	public MRCubeEstimateReducer() {
 		
@@ -35,6 +40,7 @@ public class MRCubeEstimateReducer extends Reducer<Segment,
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
 		super.cleanup(context);
+		context.write(new LongWritable(prevCuboidId), new Text(Long.toString(currMax)));
 	}
 	
 	@Override
@@ -49,7 +55,35 @@ public class MRCubeEstimateReducer extends Reducer<Segment,
 	@Override
 	protected void reduce(Segment segment, Iterable<LongWritable> value, Context context)
 		throws IOException, InterruptedException {
+		
 		//System.out.println(segment);
-		context.write(segment.tuple, zero);
+		
+		long sum = 0;
+		for (LongWritable lw : value) {
+			sum += lw.get();
+		}
+		
+		Tuple tuple = new Tuple(segment.tuple.fields);
+		if (segment.id == prevCuboidId){
+			if (tuple.compareTo(preTuple) != 0){
+				if (currSum > currMax){
+					currMax = currSum;
+					currSum = 0;
+				}
+			}
+		}else{
+			if (prevCuboidId != -1){
+				if (currSum > currMax){
+					currMax = currSum;
+					currSum = 0;
+				}
+				context.write(new LongWritable(prevCuboidId), new Text(Long.toString(currMax)));
+			}
+			currMax = -1;
+			prevCuboidId = segment.id;
+		}
+		
+		preTuple = tuple;
+		currSum += sum;
 	}
 }

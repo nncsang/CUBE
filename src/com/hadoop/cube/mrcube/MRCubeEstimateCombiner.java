@@ -13,12 +13,20 @@ public class MRCubeEstimateCombiner extends Reducer<Segment,
 									LongWritable,
 									Segment,
 									LongWritable> {
-
+	
+	public LongWritable one = new LongWritable(1); 
 	public MRCubeEstimateCombiner() {
 	}
 	
 	@Override
 	protected void reduce(Segment key, Iterable<LongWritable> value, Context context)
 	    throws IOException, InterruptedException {
+		long sum = 0;
+		for (LongWritable lw : value) {
+		    sum += lw.get();
+		}
+		one.set(sum);
+		
+		context.write(key, one);
 	}
 }

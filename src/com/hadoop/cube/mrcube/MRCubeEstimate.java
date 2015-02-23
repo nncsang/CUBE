@@ -12,6 +12,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -75,8 +76,8 @@ public class MRCubeEstimate extends Configured implements Tool{
 		//job.setSortComparatorClass(TimestampWritable.Comparator.class);
 
 		// set job output format
-		job.setOutputKeyClass(Tuple.class);
-		job.setOutputValueClass(LongWritable.class);
+		job.setOutputKeyClass(LongWritable.class);
+		job.setOutputValueClass(Text.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		
 		//job.setCombinerClass(MRCubeEstimateCombiner.class);
@@ -123,21 +124,20 @@ public class MRCubeEstimate extends Configured implements Tool{
 		job.getConfiguration().set("attributes", Utils.join(attributes, GlobalSettings.DELIM_BETWEEN_ATTRIBUTES));
 		job.getConfiguration().set("regionList", regionList);
 		
-		
 		/** RUN **/
 		job.waitForCompletion(true);
 		
 		try{
 	        FileStatus[] status = fs.listStatus(outputDir);
 	 
-	        for (int i=0;i<status.length;i++){
+	        for (int i = 0; i < status.length; i++){
 	 
 	            BufferedReader brIn=new BufferedReader(new InputStreamReader(fs.open(status[i].getPath())));
 	            String line;
 	            line=brIn.readLine();
 	 
 	            while (line != null){
-	               // System.out.println(line);
+	            	System.out.println(line);
 	                line=brIn.readLine();
 	            }
 	        }

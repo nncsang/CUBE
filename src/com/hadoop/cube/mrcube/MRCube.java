@@ -1,14 +1,18 @@
 package com.hadoop.cube.mrcube;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -35,15 +39,16 @@ public class MRCube extends Configured implements Tool{
 	private Path inputPath;
 	private Path outputDir;
 	private int tupleLength;
-	
+	private int reducerLimit;
+	private int dataSize;
 	public static void main(String args[]) throws Exception {
 		int res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
 	}
 	
 	public MRCube(String[] args) {
-		if (args.length != 4) {
-			System.out.println("Usage: MRCube <input_path> <output_path> <num_reducers> <tuple_length>");
+		if (args.length != 6) {
+			System.out.println("Usage: MRCube <input_path> <output_path> <num_reducers> <tuple_length> <reducer_limit> <data_size>");
 			System.exit(0);
 		}
 		
@@ -51,13 +56,153 @@ public class MRCube extends Configured implements Tool{
 		this.outputDir = new Path(args[1]);
 		this.numReducers = Integer.parseInt(args[2]);
 		this.tupleLength = Integer.parseInt(args[3]);
-		
+		this.reducerLimit = Integer.parseInt(args[4]);
+		this.dataSize = Integer.parseInt(args[5]);
 		Tuple.setLength(tupleLength);
 	}
 
 	@Override
 	public int run(String[] arg0) throws Exception {
+		
+		/** ESTIMATE PHASE **/
 		Configuration conf = this.getConf();
+		Job estimateJob = new Job(conf, "MRCubeEstimate"); 
+		
+		// set job input format
+		estimateJob.setInputFormatClass(SequenceFileInputFormat.class);
+
+		// set map class and the map output key and value classes
+		estimateJob.setMapperClass(MRCubeEstimateMapper.class);
+		estimateJob.setMapOutputKeyClass(Segment.class);
+		estimateJob.setMapOutputValueClass(LongWritable.class);
+		
+		estimateJob.setPartitionerClass(MRCubeEstimatePartitioner.class);
+		//job.setSortComparatorClass(IRGPlusIRGSorter.class);
+		
+		// set reduce class and the reduce output key and value classes
+		estimateJob.setReducerClass(MRCubeEstimateReducer.class);
+		
+		//job.setSortComparatorClass(TimestampWritable.Comparator.class);
+
+		// set job output format
+		estimateJob.setOutputKeyClass(LongWritable.class);
+		estimateJob.setOutputValueClass(Text.class);
+		estimateJob.setOutputFormatClass(TextOutputFormat.class);
+		
+		estimateJob.setCombinerClass(MRCubeEstimateCombiner.class);
+		
+		// add the input file as job input (from HDFS) to the variable
+		// inputFile
+		FileInputFormat.addInputPath(estimateJob, inputPath);
+
+		// set the output path for the job results (to HDFS) to the
+		// variable
+		// outputPath
+		//if file output is existed, delete it
+		FileSystem fs = FileSystem.get(conf);
+		
+		Path output_estimate = new Path("output_estimate");
+		if(fs.exists(output_estimate)){
+			fs.delete(output_estimate, true);
+		}
+				
+		FileOutputFormat.setOutputPath(estimateJob, output_estimate);
+
+		// set the number of reducers using variable numberReducers
+		estimateJob.setNumReduceTasks(this.numReducers);
+
+		// set the jar class
+		
+		
+		
+		String[] attributes = new String[this.tupleLength];
+		
+		for(int i = 0; i < this.tupleLength; i++)
+			attributes[i] = Integer.toString(i);
+		Tuple.setLength(tupleLength);
+		
+		CubeLattice cube = new CubeLattice(attributes);
+		List<Cuboid> cuboids = cube.cuboids();
+		String regionList = "";
+		for(int i = 0; i < cuboids.size(); i++){
+			String region = cuboids.get(i).toString();
+			regionList = regionList + region + GlobalSettings.DELIM_BETWEEN_CONTENTS_OF_TUPLE;
+		}
+		
+		regionList = regionList.substring(0, regionList.length() - 1);
+		
+		estimateJob.getConfiguration().set("attributes", Utils.join(attributes, GlobalSettings.DELIM_BETWEEN_ATTRIBUTES));
+		estimateJob.getConfiguration().set("regionList", regionList);
+		
+		/** Compute random rate **/
+		int nNeededTuple = (int)(100 * this.dataSize/ this.reducerLimit);
+		GlobalSettings.RANDOM_RATE = (int) (nNeededTuple / (float) this.dataSize) * 100 + 10;
+		int expectedSamplingSize = (int) (this.dataSize * GlobalSettings.RANDOM_RATE / 100.0);
+		int realSamplingSize = 0;
+		
+		
+		estimateJob.setJarByClass(MRCubeEstimate.class);
+		estimateJob.waitForCompletion(true);
+		
+		
+		try{
+	        FileStatus[] status = fs.listStatus(output_estimate);
+	 
+	        for (int i = 0; i < status.length; i++){
+	 
+	            BufferedReader brIn=new BufferedReader(new InputStreamReader(fs.open(status[i].getPath())));
+	            String line;
+	            line=brIn.readLine();
+	 
+	            while (line != null){
+	            	System.out.println(line);
+	            	String[] parts = line.split("\t");
+	            	int id = Integer.parseInt(parts[0]);
+	            	
+	            	int maxTuple = Integer.parseInt(parts[1]);
+	            	if (id == 0)
+	            		realSamplingSize = maxTuple;
+	            	
+	            	if (maxTuple > this.reducerLimit){
+	            		cuboids.get(id).setFriendly(false);
+	            		cuboids.get(id).setPartitionFactor(maxTuple);
+	            	}
+	                line=brIn.readLine();
+	            }
+	        }
+	 
+	    }catch(Exception e){
+	        System.out.println(e.toString());
+	    }
+		
+		int reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * realSamplingSize;
+		
+		System.out.println("Expected Sampling Size : " + expectedSamplingSize);
+		System.out.println("Real Sampling Size: " + realSamplingSize);
+		System.out.println("Sampling Reducer Limit: " + reducerLimitForSampling);
+		
+		for(Cuboid cuboid: cuboids){
+			if (cuboid.isFriendly == false){
+				int maxTuple = cuboid.partition_factor;
+				cuboid.partition_factor = (int) (maxTuple / (float) reducerLimitForSampling) + 1;
+			}
+		}
+		
+		/** for testing */
+		if (cuboids.get(0).isFriendly == true){
+			cuboids.get(0).setFriendly(false);
+			cuboids.get(0).setPartitionFactor(2);
+		}
+		
+//		cuboids.get(0).setFriendly(false);
+//		cuboids.get(2).setFriendly(false);
+//		cuboids.get(3).setFriendly(false);
+		
+		//cube.printCuboids();
+		cube.batching();
+		//cube.printBatches();
+		
+		/** MAIN PHASE **/
 		Job job = new Job(conf, "MRCube"); 
 		
 		// set job input format
@@ -91,7 +236,6 @@ public class MRCube extends Configured implements Tool{
 		// variable
 		// outputPath
 		//if file output is existed, delete it
-		FileSystem fs = FileSystem.get(conf);
 		
 		if(fs.exists(outputDir)){
 			fs.delete(outputDir, true);
@@ -105,29 +249,14 @@ public class MRCube extends Configured implements Tool{
 		// set the jar class
 		job.setJarByClass(MRCube.class);
 		
-		String[] attributes = new String[this.tupleLength];
-			
-		for(int i = 0; i < this.tupleLength; i++)
-			attributes[i] = Integer.toString(i);
-
-		CubeLattice cube = new CubeLattice(attributes);
-		List<Cuboid> cuboids = cube.cuboids();
-		
-		/** for testing */
-//		cuboids.get(0).setFriendly(false);
-//		cuboids.get(2).setFriendly(false);
-//		cuboids.get(3).setFriendly(false);
-		
-		//cube.printCuboids();
-		cube.batching();
-		//cube.printBatches();
 		
 		String friendlyBatches = "";
 		String unfriendlyBatches = "";
 		
 		for(int i = 0; i < cube.friendlyBatches.size() - 1; i++)
 			friendlyBatches += cube.friendlyBatches.get(i).convertToString() + "=";
-		friendlyBatches += cube.friendlyBatches.get(cube.friendlyBatches.size() - 1).convertToString();
+		if (cube.unfriendlyBatches.size() >= 1)
+			friendlyBatches += cube.friendlyBatches.get(cube.friendlyBatches.size() - 1).convertToString();
 		
 		for(int i = 0; i < cube.unfriendlyBatches.size() - 1; i++)
 			unfriendlyBatches += cube.unfriendlyBatches.get(i).convertToString() + "=";
@@ -163,8 +292,10 @@ public class MRCube extends Configured implements Tool{
 		job.getConfiguration().set("unfriendlyBatches", unfriendlyBatches);
 		job.getConfiguration().set("bucsStr", bucsStr);
 		
+		
+		
 		job.waitForCompletion(true);
-		Checker.main(null);
+		//Checker.main(null);
 		return 0;
 	}
 }

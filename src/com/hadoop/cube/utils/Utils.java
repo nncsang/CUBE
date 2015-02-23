@@ -2,9 +2,16 @@ package com.hadoop.cube.utils;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class Utils {
+	public static Random rand = new Random();
+	
+	public static int randInt(int min, int max) {
+	    return rand.nextInt((max - min) + 1) + min;
+	}
+	
 	public static void printSet(Set<String> input){
 		if (input == null || input.isEmpty())
 			return;

@@ -39,15 +39,9 @@ public class MRCubeEstimatePartitioner extends Partitioner<Segment, LongWritable
 
     @Override
     public int getPartition(Segment segment, LongWritable value, int numReduceTasks) {
-    	//System.out.println(segment);
-    	Tuple key = segment.tuple;
-  
     	m.reset();
         m.update(ByteBuffer.allocate(4).putInt(segment.id).array());
         
-//        for (i = 0; i < Tuple.length; i++) {
-//        	m.update(ByteBuffer.allocate(4).putInt(key.fields[i]).array());
-//        }
         
         //System.out.println(segment + " " + (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks);
         return (m.digest()[15] & Integer.MAX_VALUE) % numReduceTasks;

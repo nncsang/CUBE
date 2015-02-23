@@ -8,5 +8,5 @@ public class GlobalSettings {
 	public static String DELIM_BETWEEN_CONTENTS_OF_TUPLE = "\t";
 	public static String DELIM_BETWEEN_GROUPIDS = ",";
 	public static boolean ISDEBUG = false;
-	
+	public static int RANDOM_RATE = 10;
 }
