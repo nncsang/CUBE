@@ -148,7 +148,7 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 	protected void map(LongWritable index, Text line, Context context)
 			throws IOException, InterruptedException {
 		
-		String[] values = line.toString().split("");
+		String[] values = line.toString().split(" ");
 		value.set(Integer.parseInt(values[2]), Integer.parseInt(values[6]), Integer.parseInt(values[8]), Integer.parseInt(values[10]),
 				Integer.parseInt(values[19]), Integer.parseInt(values[20]));
 		
