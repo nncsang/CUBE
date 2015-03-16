@@ -149,8 +149,14 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 			throws IOException, InterruptedException {
 		
 		String[] values = line.toString().split(" ");
-		value.set(Integer.parseInt(values[2]), Integer.parseInt(values[6]), Integer.parseInt(values[8]), Integer.parseInt(values[10]),
-				Integer.parseInt(values[19]), Integer.parseInt(values[20]));
+		
+		value.fields[0] = Integer.parseInt(values[2]);
+		value.fields[1] = Integer.parseInt(values[6]);
+		value.fields[2] = Integer.parseInt(values[8]);
+		value.fields[3] = Integer.parseInt(values[10]);
+		value.fields[4] = Integer.parseInt(values[19]);
+		value.fields[5] = Integer.parseInt(values[20]);
+		
 		
 		sum.set(Integer.parseInt(values[21]));
 		

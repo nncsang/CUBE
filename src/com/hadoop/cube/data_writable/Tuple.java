@@ -38,7 +38,6 @@ public class Tuple implements WritableComparable<Tuple> {
     
     public void set(int... f) {
     	for(int i = 0; i < Tuple.length; i++){
-    		System.out.println(f[i]);
     		this.fields[i] = f[i];
     	}
     }
