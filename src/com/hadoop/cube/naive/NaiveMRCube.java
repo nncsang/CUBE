@@ -148,8 +148,6 @@ class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>
 		
 		int size = regions.size();
 		for(int i = 0; i < size; i++){
-//			if (i == 0 || i == 2 || i == 3)
-//				continue;
 			Cuboid region = regions.get(i);
 			String[] attributes = region.getAttributes();
 			int length = attributes.length;
