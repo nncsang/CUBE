@@ -90,7 +90,7 @@ public class NaiveMRCube extends Configured implements Tool {
 		Job job = new Job(conf, "NaiveMRCube"); // TODO: define new job instead of null using conf
 		
 		// TODO: set job input format
-		job.setInputFormatClass(SequenceFileInputFormat.class);
+		job.setInputFormatClass(TextInputFormat.class);
 		    
 		// TODO: set map class and the map output key and value classes
 		job.setMapperClass(NaiveMRCubeMapper.class);
@@ -127,8 +127,10 @@ public class NaiveMRCube extends Configured implements Tool {
 	}
 }
 
-class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>{
+class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 	private List<Cuboid> regions;
+	private Tuple value = new Tuple();
+	private LongWritable sum = new LongWritable(0);
 	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
@@ -143,8 +145,14 @@ class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>
 	}
 	
 	@Override
-	protected void map(Tuple value, LongWritable index, Context context)
+	protected void map(LongWritable index, Text line, Context context)
 			throws IOException, InterruptedException {
+		
+		String[] values = line.toString().split("");
+		value.set(Integer.parseInt(values[2]), Integer.parseInt(values[6]), Integer.parseInt(values[8]), Integer.parseInt(values[10]),
+				Integer.parseInt(values[19]), Integer.parseInt(values[20]));
+		
+		sum.set(Integer.parseInt(values[20]));
 		
 		int size = regions.size();
 		for(int i = 0; i < size; i++){
@@ -161,7 +169,7 @@ class NaiveMRCubeMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable>
 				}
 			}
 			
-			context.write(key, index);
+			context.write(key, sum);
 		}
 	}
 }
