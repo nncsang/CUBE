@@ -152,7 +152,9 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 		value.set(Integer.parseInt(values[2]), Integer.parseInt(values[6]), Integer.parseInt(values[8]), Integer.parseInt(values[10]),
 				Integer.parseInt(values[19]), Integer.parseInt(values[20]));
 		
-		sum.set(Integer.parseInt(values[20]));
+		sum.set(Integer.parseInt(values[21]));
+		
+		System.out.println(value);
 		
 		int size = regions.size();
 		for(int i = 0; i < size; i++){
