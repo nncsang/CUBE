@@ -157,26 +157,26 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 		for(int i = 0; i < values.length; i++){
 			System.out.println(Integer.toString(i) + ": " + values[i]);
 		}
-		sum.set(Integer.parseInt(values[21]));
-		
-		
-		int size = regions.size();
-		for(int i = 0; i < size; i++){
-			Cuboid region = regions.get(i);
-			String[] attributes = region.getAttributes();
-			int length = attributes.length;
-			System.out.println(length);
-			Tuple key = new Tuple();
-			for(int j = 0; j < length; j++){
-				if (attributes[j].equals(GlobalSettings.ALL)){
-					key.fields[j] = Tuple.NullValue;
-				}else{
-					key.fields[j] = Integer.parseInt(values[indexMap[j]]);
-				}
-			}
-			
-			context.write(key, sum);
-		}
+//		sum.set(Integer.parseInt(values[21]));
+//		
+//		
+//		int size = regions.size();
+//		for(int i = 0; i < size; i++){
+//			Cuboid region = regions.get(i);
+//			String[] attributes = region.getAttributes();
+//			int length = attributes.length;
+//			System.out.println(length);
+//			Tuple key = new Tuple();
+//			for(int j = 0; j < length; j++){
+//				if (attributes[j].equals(GlobalSettings.ALL)){
+//					key.fields[j] = Tuple.NullValue;
+//				}else{
+//					key.fields[j] = Integer.parseInt(values[indexMap[j]]);
+//				}
+//			}
+//			
+//			context.write(key, sum);
+//		}
 	}
 }
 
