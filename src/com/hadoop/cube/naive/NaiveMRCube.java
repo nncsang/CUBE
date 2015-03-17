@@ -129,7 +129,6 @@ public class NaiveMRCube extends Configured implements Tool {
 
 class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 	private List<Cuboid> regions;
-	private Tuple tuple;
 	private LongWritable sum;
 	private int[] indexMap = {2,6,8,10,19,20};
 	
@@ -144,7 +143,6 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 			regions.add(new Cuboid(regionListString[i].split(GlobalSettings.DELIM_BETWEEN_ATTRIBUTES)));
 		}
 		
-		tuple = new Tuple();
 		sum = new LongWritable(0);
 	}
 	
@@ -156,7 +154,6 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 		
 		sum.set(Integer.parseInt(values[21]));
 		
-		System.out.println(tuple);
 		
 		int size = regions.size();
 		for(int i = 0; i < size; i++){
