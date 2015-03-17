@@ -13,7 +13,7 @@ public class Tuple implements WritableComparable<Tuple> {
     
     public static int length = 0;
     public static int NullValue = -1;
-    public int[] fields = null;
+    public int[] fields = new int[6];
     public long value = 0;
     
     /*Called before creating any instances*/
@@ -22,7 +22,7 @@ public class Tuple implements WritableComparable<Tuple> {
     }
     
     public Tuple(){
-    	System.out.println("Khoi tao: " + Tuple.length);
+    	//System.out.println("Khoi tao: " + Tuple.length);
     	this.fields = new int[Tuple.length];
     }
     
