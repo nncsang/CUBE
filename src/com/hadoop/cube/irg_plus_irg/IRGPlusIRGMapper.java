@@ -31,7 +31,7 @@ public class IRGPlusIRGMapper extends Mapper<LongWritable, Text, Segment, LongWr
 	private Segment segment2;
 	
 	private int[] indexMap = {2,6,8,10,19,20};
-	private LongWritable sum;
+	private LongWritable sum = new LongWritable(0);
 	
 	@Override
     protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
