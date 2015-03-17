@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -59,8 +57,6 @@ public class NaiveMRCube extends Configured implements Tool {
 	    this.inputFile = new Path(args[1]);
 	    this.outputDir = new Path(args[2]);
 	    this.tupleLength = Integer.parseInt(args[3]);
-	    
-	    //System.out.println(this.tupleLength);
 	}
 	
 	@Override
@@ -155,33 +151,26 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 			throws IOException, InterruptedException {
 		
 		String[] values = line.toString().split(" ");
-		Log log = LogFactory.getLog(NaiveMRCubeMapper.class);
 		
-		for(int i = 0; i < values.length; i++){
-			log.info(Integer.toString(i) + ": " + values[i]);
+		sum.set(Integer.parseInt(values[21]));
+		
+		int size = regions.size();
+		for(int i = 0; i < size; i++){
+			Cuboid region = regions.get(i);
+			String[] attributes = region.getAttributes();
+			int length = attributes.length;
+			
+			Tuple key = new Tuple();
+			for(int j = 0; j < length; j++){
+				if (attributes[j].equals(GlobalSettings.ALL)){
+					key.fields[j] = Tuple.NullValue;
+				}else{
+					key.fields[j] = Integer.parseInt(values[indexMap[j]]);
+				}
+			}
+			
+			context.write(key, sum);
 		}
-		
-		
-//		sum.set(Integer.parseInt(values[21]));
-//		
-//		
-//		int size = regions.size();
-//		for(int i = 0; i < size; i++){
-//			Cuboid region = regions.get(i);
-//			String[] attributes = region.getAttributes();
-//			int length = attributes.length;
-//			System.out.println(length);
-//			Tuple key = new Tuple();
-//			for(int j = 0; j < length; j++){
-//				if (attributes[j].equals(GlobalSettings.ALL)){
-//					key.fields[j] = Tuple.NullValue;
-//				}else{
-//					key.fields[j] = Integer.parseInt(values[indexMap[j]]);
-//				}
-//			}
-//			
-//			context.write(key, sum);
-//		}
 	}
 }
 

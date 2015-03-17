@@ -23,7 +23,7 @@ public class Tuple implements WritableComparable<Tuple> {
     
     public Tuple(){
     	//System.out.println("Khoi tao: " + Tuple.length);
-    	this.fields = new int[Tuple.length];
+    	//this.fields = new int[Tuple.length];
     }
     
     public Tuple(int... f) {
