@@ -19,7 +19,7 @@ import com.hadoop.cube.utils.Utils;
 import com.hadoop.cube.data_writable.Segment;
 import com.hadoop.cube.data_writable.Tuple;
 
-public class IRGPlusIRGMapper extends Mapper<Tuple, LongWritable, Segment, LongWritable> { 
+public class IRGPlusIRGMapper extends Mapper<LongWritable, Text, Segment, LongWritable> { 
 
 	private Map<String, Integer> attrPosition;
 	
@@ -29,9 +29,12 @@ public class IRGPlusIRGMapper extends Mapper<Tuple, LongWritable, Segment, LongW
 	
 	private Segment segment1;
 	private Segment segment2;
-
+	
+	private int[] indexMap = {2,6,8,10,19,20};
+	private LongWritable sum;
+	
 	@Override
-    protected void setup(org.apache.hadoop.mapreduce.Mapper<Tuple, LongWritable, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
+    protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
         Configuration conf = context.getConfiguration();
         
@@ -66,10 +69,15 @@ public class IRGPlusIRGMapper extends Mapper<Tuple, LongWritable, Segment, LongW
     }
 
     @Override
-	protected void map(Tuple key, 
-	        LongWritable value,
+	protected void map(LongWritable index, 
+	        Text line,
 			Context context) throws IOException, InterruptedException {
-    	int testId = 16;
+    	
+    	String[] values = line.toString().split(" ");
+		
+		sum.set(Integer.parseInt(values[21]));
+
+    	
     	for(int i = 0; i < this.size; i++){
     		
     		this.segment1.id = i;
@@ -84,7 +92,7 @@ public class IRGPlusIRGMapper extends Mapper<Tuple, LongWritable, Segment, LongW
     		
     		for(int j = 0; j < length; j++){
     			
-    			int attr = key.fields[attrPosition.get(attributes[j])]; 
+    			int attr = Integer.parseInt(values[indexMap[attrPosition.get(attributes[j])]]); 
     		
 	    		if (j >= this.pivot){
 	    			this.segment1.tuple.fields[j] = Tuple.NullValue;
@@ -96,10 +104,10 @@ public class IRGPlusIRGMapper extends Mapper<Tuple, LongWritable, Segment, LongW
     		}
     		
     		if (isNeedEmitTuple[0] == true)
-    			context.write(this.segment1, value);
+    			context.write(this.segment1, sum);
     		
     		if (isNeedEmitTuple[1] == true){
-    			context.write(this.segment2, value);
+    			context.write(this.segment2, sum);
     		}
     	}
     }
