@@ -58,7 +58,7 @@ public class NaiveMRCube extends Configured implements Tool {
 	    this.outputDir = new Path(args[2]);
 	    this.tupleLength = Integer.parseInt(args[3]);
 	    
-	    System.out.println(this.tupleLength);
+	    //System.out.println(this.tupleLength);
 	}
 	
 	@Override
@@ -162,7 +162,7 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 			Cuboid region = regions.get(i);
 			String[] attributes = region.getAttributes();
 			int length = attributes.length;
-			
+			System.out.println(length);
 			Tuple key = new Tuple();
 			for(int j = 0; j < length; j++){
 				if (attributes[j].equals(GlobalSettings.ALL)){
