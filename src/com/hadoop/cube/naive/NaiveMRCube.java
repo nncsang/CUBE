@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -153,10 +155,13 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 			throws IOException, InterruptedException {
 		
 		String[] values = line.toString().split(" ");
+		Log log = LogFactory.getLog(NaiveMRCubeMapper.class);
 		
 		for(int i = 0; i < values.length; i++){
-			System.out.println(Integer.toString(i) + ": " + values[i]);
+			log.info(Integer.toString(i) + ": " + values[i]);
 		}
+		
+		
 //		sum.set(Integer.parseInt(values[21]));
 //		
 //		
