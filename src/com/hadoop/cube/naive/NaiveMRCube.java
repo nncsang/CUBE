@@ -57,6 +57,8 @@ public class NaiveMRCube extends Configured implements Tool {
 	    this.inputFile = new Path(args[1]);
 	    this.outputDir = new Path(args[2]);
 	    this.tupleLength = Integer.parseInt(args[3]);
+	    
+	    System.out.println(this.tupleLength);
 	}
 	
 	@Override
