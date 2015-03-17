@@ -11,7 +11,7 @@ import org.apache.hadoop.io.WritableComparator;
 
 public class Tuple implements WritableComparable<Tuple> {
     
-    public static int length = 0;
+    public static int length = 6;
     public static int NullValue = -1;
     public int[] fields = new int[6];
     public long value = 0;
