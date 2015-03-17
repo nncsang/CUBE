@@ -245,8 +245,8 @@ class MRCubeEstimate extends Configured implements Tool{
 			cuboids.get(0).setFriendly(false);
 			cuboids.get(0).setPartitionFactor(2);
 			
-			cuboids.get(1).setFriendly(false);
-			cuboids.get(1).setPartitionFactor(3);
+//			cuboids.get(1).setFriendly(false);
+//			cuboids.get(1).setPartitionFactor(3);
 		}
 		
 		cube.batching();
