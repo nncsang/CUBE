@@ -22,6 +22,7 @@ public class Tuple implements WritableComparable<Tuple> {
     }
     
     public Tuple(){
+    	System.out.println(Tuple.length);
     	this.fields = new int[Tuple.length];
     }
     
