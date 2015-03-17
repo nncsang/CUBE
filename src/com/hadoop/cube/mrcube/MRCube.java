@@ -20,6 +20,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -150,7 +151,7 @@ class MRCubeEstimate extends Configured implements Tool{
 		Configuration conf = this.getConf();
 		Job estimateJob = new Job(conf, "MRCubeEstimate"); 
 		
-		estimateJob.setInputFormatClass(SequenceFileInputFormat.class);
+		estimateJob.setInputFormatClass(TextInputFormat.class);
 		
 		estimateJob.setMapperClass(MRCubeEstimateMapper.class);
 		estimateJob.setMapOutputKeyClass(Segment.class);
@@ -284,7 +285,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 		Job job = new Job(conf, "MRCube"); 
 		
 		// set job input format
-		job.setInputFormatClass(SequenceFileInputFormat.class);
+		job.setInputFormatClass(TextInputFormat.class);
 
 		// set map class and the map output key and value classes
 		job.setMapperClass(MRCubeMapper.class);

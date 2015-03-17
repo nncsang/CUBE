@@ -21,13 +21,14 @@ import com.hadoop.cube.utils.Utils;
 import com.hadoop.cube.data_writable.Segment;
 import com.hadoop.cube.data_writable.Tuple;
 
-public class MRCubeEstimateMapper extends Mapper<Tuple, LongWritable, Segment, LongWritable> { 
+public class MRCubeEstimateMapper extends Mapper<LongWritable, Text, Segment, LongWritable> { 
 	
 	public static LongWritable one = new LongWritable(1);
 	private List<Cuboid> regions;
+	private int[] indexMap = {2,6,8,10,19,20};
 	
 	@Override
-    protected void setup(org.apache.hadoop.mapreduce.Mapper<Tuple, LongWritable, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
+    protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
         Configuration conf = context.getConfiguration();
         
@@ -42,13 +43,15 @@ public class MRCubeEstimateMapper extends Mapper<Tuple, LongWritable, Segment, L
     }
 
     @Override
-	protected void map(Tuple value, LongWritable index, Context context) throws IOException, InterruptedException {
+	protected void map(LongWritable value, Text line, Context context) throws IOException, InterruptedException {
     	//System.out.println(value);
     	
     	int random = Utils.randInt(0, 100);
     	if (random > GlobalSettings.RANDOM_RATE)
     		return;
     	
+    	String[] values = line.toString().split(" ");
+		
     	int size = regions.size();
 		for(int i = 0; i < size; i++){
 			Cuboid region = regions.get(i);
@@ -60,7 +63,7 @@ public class MRCubeEstimateMapper extends Mapper<Tuple, LongWritable, Segment, L
 				if (attributes[j].equals(GlobalSettings.ALL)){
 					key.fields[j] = Tuple.NullValue;
 				}else{
-					key.fields[j] = value.fields[j];
+					key.fields[j] = Integer.parseInt(values[indexMap[j]]);
 				}
 			}
 			
