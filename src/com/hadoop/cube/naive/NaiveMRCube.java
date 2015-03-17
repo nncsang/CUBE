@@ -154,6 +154,9 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 		
 		String[] values = line.toString().split(" ");
 		
+		for(int i = 0; i < values.length; i++){
+			System.out.println(Integer.toString(i) + ": " + values[i]);
+		}
 		sum.set(Integer.parseInt(values[21]));
 		
 		
