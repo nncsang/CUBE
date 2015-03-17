@@ -129,8 +129,8 @@ public class NaiveMRCube extends Configured implements Tool {
 
 class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 	private List<Cuboid> regions;
-	private Tuple value = new Tuple();
-	private LongWritable sum = new LongWritable(0);
+	private Tuple tuple;
+	private LongWritable sum;
 	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
@@ -142,6 +142,9 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 		for(int i = 0; i < regionListString.length; i++){
 			regions.add(new Cuboid(regionListString[i].split(GlobalSettings.DELIM_BETWEEN_ATTRIBUTES)));
 		}
+		
+		tuple = new Tuple();
+		sum = new LongWritable(0);
 	}
 	
 	@Override
@@ -150,17 +153,17 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 		
 		String[] values = line.toString().split(" ");
 		
-		value.fields[0] = Integer.parseInt(values[2]);
-		value.fields[1] = Integer.parseInt(values[6]);
-		value.fields[2] = Integer.parseInt(values[8]);
-		value.fields[3] = Integer.parseInt(values[10]);
-		value.fields[4] = Integer.parseInt(values[19]);
-		value.fields[5] = Integer.parseInt(values[20]);
+		tuple.fields[0] = Integer.parseInt(values[2]);
+		tuple.fields[1] = Integer.parseInt(values[6]);
+		tuple.fields[2] = Integer.parseInt(values[8]);
+		tuple.fields[3] = Integer.parseInt(values[10]);
+		tuple.fields[4] = Integer.parseInt(values[19]);
+		tuple.fields[5] = Integer.parseInt(values[20]);
 		
 		
 		sum.set(Integer.parseInt(values[21]));
 		
-		System.out.println(value);
+		System.out.println(tuple);
 		
 		int size = regions.size();
 		for(int i = 0; i < size; i++){
@@ -173,7 +176,7 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 				if (attributes[j].equals(GlobalSettings.ALL)){
 					key.fields[j] = Tuple.NullValue;
 				}else{
-					key.fields[j] = value.fields[j];
+					key.fields[j] = tuple.fields[j];
 				}
 			}
 			
