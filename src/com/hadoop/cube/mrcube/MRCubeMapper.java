@@ -21,7 +21,7 @@ import com.hadoop.cube.utils.Utils;
 import com.hadoop.cube.data_writable.Segment;
 import com.hadoop.cube.data_writable.Tuple;
 
-public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWritable> { 
+public class MRCubeMapper extends Mapper<LongWritable, Text, Segment, LongWritable> { 
 	
 	
 	Segment segment;
@@ -29,8 +29,11 @@ public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWrita
 	public int[] nullArray;
 	public List<Batch> unfriendlyBatches;
 	public Tuple tuple;
+	private LongWritable sum = new LongWritable(0);
+	private int[] data = new int[6];
+	
 	@Override
-    protected void setup(org.apache.hadoop.mapreduce.Mapper<Tuple, LongWritable, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
+    protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
         
         //System.out.println("MAPPER:");
@@ -51,7 +54,16 @@ public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWrita
     }
 
     @Override
-	protected void map(Tuple key, LongWritable value, Context context) throws IOException, InterruptedException {
+    protected void map(LongWritable idx, Text line, Context context)
+			throws IOException, InterruptedException {
+		
+		String[] values = line.toString().split("\t");
+		for(int i = 0; i < Tuple.length; i++){
+			data[i] = Integer.parseInt(values[i]);
+		}
+		
+		sum.set(Integer.parseInt(values[Tuple.length]));
+
     	
     	for(int i = 0; i < unfriendlyBatches.size(); i++){
     		Cuboid cuboid = unfriendlyBatches.get(i).cuboids.get(0);
@@ -60,18 +72,18 @@ public class MRCubeMapper extends Mapper<Tuple, LongWritable, Segment, LongWrita
     		if (cuboid.numPresentation != null){
     			for(int j = 0; j < cuboid.numPresentation.size(); j++){
     				int index = cuboid.numPresentation.get(j);
-    				segment.tuple.fields[index] = key.fields[index];
+    				segment.tuple.fields[index] = data[index];
     			}
     		}
     		
     		//System.out.println("MAPPER: \t" + segment + "\t" + value);
-    		context.write(segment, value);
+    		context.write(segment, sum);
     	}
     	
     	//System.out.println(key);
     	for (int i = 0; i < nBatch; i++){
-    		segment = new Segment(i, key.fields);
-    		context.write(segment, value);
+    		segment = new Segment(i, data);
+    		context.write(segment, sum);
     		//System.out.println(segment);
     	}
     	

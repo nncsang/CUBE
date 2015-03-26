@@ -21,9 +21,9 @@ public class DataCreator {
 		System.out.println("Starting to write data");
 		PrintWriter out = new PrintWriter(args[0]);
 		Random random = new Random();
-		long dataSize = Long.parseLong(args[1]) * 1024 * 1024 * 1024;
+		long dataSize = Long.parseLong(args[1]) * 1024 * 1024;
 		long noYear = Integer.parseInt(args[2]);
-		long oneGB = 1024 * 1024 * 1024;
+		long oneGB = 1024 * 1024;
 		String writeData = "";
 		long cnt = 0;
 		while (true) {
@@ -34,7 +34,7 @@ public class DataCreator {
 			long m = random.nextInt(1000000000) % 60;
 			long s = random.nextInt(1000000000) % 60;
 			long p = random.nextInt(1000000000) % 100 + 1;
-			writeData = y + "\t" + M + "\t" + d + "\t" + h + "\t" + m + "\t" + s + "\t" + p + "\n";
+			writeData = y + "\t" + M + "\t" + d + "\t" + h + "\t" + m + "\t" + s + "\t" + p;
 			cnt += writeData.length() + 2;
 			if (cnt >= dataSize) {
 				break;
