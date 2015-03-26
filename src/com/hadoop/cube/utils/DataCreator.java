@@ -23,7 +23,7 @@ public class DataCreator {
 		Random random = new Random();
 		long dataSize = Long.parseLong(args[1]) * 1024 * 1024 * 1024;
 		long noYear = Integer.parseInt(args[2]);
-		long oneGB = 1024 * 1024;
+		long oneGB = 1024 * 1024 * 1024;
 		String writeData = "";
 		long cnt = 0;
 		while (true) {
