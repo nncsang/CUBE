@@ -197,59 +197,9 @@ class MRCubeEstimate extends Configured implements Tool{
 		estimateJob.getConfiguration().set("attributes", Utils.join(attributes, GlobalSettings.DELIM_BETWEEN_ATTRIBUTES));
 		estimateJob.getConfiguration().set("regionList", regionList);
 		
-		/** Compute random rate **/
-		int nNeededTuple = (int)(100 * this.dataSize/ this.reducerLimit);
-		GlobalSettings.RANDOM_RATE = (int) (nNeededTuple / (float) this.dataSize) * 100 + 5;
-		int expectedSamplingSize = (int) (this.dataSize * GlobalSettings.RANDOM_RATE / 100.0);
-		int realSamplingSize = 0;
-		int reducerLimitForSampling = 0;
-		
 		estimateJob.setJarByClass(MRCubeEstimate.class);
 		estimateJob.waitForCompletion(true);
 		
-		try{
-	        FileStatus[] status = fs.listStatus(outputDir);
-	 
-	        for (int i = 0; i < status.length; i++){
-	 
-	            BufferedReader brIn=new BufferedReader(new InputStreamReader(fs.open(status[i].getPath())));
-	            String line;
-	            line=brIn.readLine();
-	 
-	            while (line != null){
-	            	//System.out.println(line);
-	            	String[] parts = line.split("\t");
-	            	int id = Integer.parseInt(parts[0]);
-	            	
-	            	int maxTuple = Integer.parseInt(parts[1]);
-	            	if (id == 0){
-	            		realSamplingSize = maxTuple;
-	            		reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * realSamplingSize;
-	            	}
-	            	
-	            	if (maxTuple > reducerLimitForSampling){
-	            		cuboids.get(id).setFriendly(false);
-	            		cuboids.get(id).setPartitionFactor((int) (maxTuple / (float) reducerLimitForSampling) + 1);
-	            	}
-	                line=brIn.readLine();
-	            }
-	        }
-	 
-	    }catch(Exception e){
-	        System.out.println(e.toString());
-	    }
-		
-		/** for testing */
-		if (cuboids.get(0).isFriendly == true){
-			cuboids.get(0).setFriendly(false);
-			cuboids.get(0).setPartitionFactor(2);
-			
-			cuboids.get(1).setFriendly(false);
-			cuboids.get(1).setPartitionFactor(3);
-		}
-		
-		cube.batching();
-		GlobalSettings.cube = cube;
 		return 0;
 	}
 }
@@ -321,7 +271,63 @@ class MRCubeIntermediate extends Configured implements Tool{
 			fs.delete(outputDir, true);
 		}
 		
-		CubeLattice cube = GlobalSettings.cube;
+		//CubeLattice cube = GlobalSettings.cube;
+		String[] attributes = new String[this.tupleLength];
+		for(int i = 0; i < this.tupleLength; i++)
+			attributes[i] = Integer.toString(i);
+		Tuple.setLength(tupleLength);
+		
+		CubeLattice cube = new CubeLattice(attributes);
+		List<Cuboid> cuboids = cube.cuboids();
+		
+		int nNeededTuple = (int)(100 * this.dataSize/ this.reducerLimit);
+		GlobalSettings.RANDOM_RATE = (int) (nNeededTuple / (float) this.dataSize) * 100 + 5;
+		int expectedSamplingSize = (int) (this.dataSize * GlobalSettings.RANDOM_RATE / 100.0);
+		int realSamplingSize = 0;
+		int reducerLimitForSampling = 0;
+		
+		try{
+	        FileStatus[] status = fs.listStatus(new Path("output_mrcube_estimate"));
+	 
+	        for (int i = 0; i < status.length; i++){
+	 
+	            BufferedReader brIn=new BufferedReader(new InputStreamReader(fs.open(status[i].getPath())));
+	            String line;
+	            line=brIn.readLine();
+	 
+	            while (line != null){
+	            	//System.out.println(line);
+	            	String[] parts = line.split("\t");
+	            	int id = Integer.parseInt(parts[0]);
+	            	
+	            	int maxTuple = Integer.parseInt(parts[1]);
+	            	if (id == 0){
+	            		realSamplingSize = maxTuple;
+	            		reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * realSamplingSize;
+	            	}
+	            	
+	            	if (maxTuple > reducerLimitForSampling){
+	            		cuboids.get(id).setFriendly(false);
+	            		cuboids.get(id).setPartitionFactor((int) (maxTuple / (float) reducerLimitForSampling) + 1);
+	            	}
+	                line=brIn.readLine();
+	            }
+	        }
+	 
+	    }catch(Exception e){
+	        System.out.println(e.toString());
+	    }
+		
+		/** for testing */
+		if (cuboids.get(0).isFriendly == true){
+			cuboids.get(0).setFriendly(false);
+			cuboids.get(0).setPartitionFactor(2);
+			
+			cuboids.get(1).setFriendly(false);
+			cuboids.get(1).setPartitionFactor(3);
+		}
+		
+		cube.batching();
 		
 		MultipleOutputs.addNamedOutput(job, "tmp", SequenceFileOutputFormat.class, Tuple.class, LongWritable.class);
 		FileOutputFormat.setOutputPath(job, outputDir);
