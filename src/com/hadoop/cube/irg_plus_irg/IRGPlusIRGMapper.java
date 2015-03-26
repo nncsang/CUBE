@@ -73,12 +73,12 @@ public class IRGPlusIRGMapper extends Mapper<LongWritable, Text, Segment, LongWr
 	        Text line,
 			Context context) throws IOException, InterruptedException {
     	
-    	String[] values = line.toString().split(" ");
+    	String[] values = line.toString().split("\t");
     	for(int i = 0; i < Tuple.length; i++){
 			data[i] = Integer.parseInt(values[i]);
 		}
     	
-		sum.set(Integer.parseInt(values[21]));
+		sum.set(Integer.parseInt(values[Tuple.length]));
 
     	
     	for(int i = 0; i < this.size; i++){
