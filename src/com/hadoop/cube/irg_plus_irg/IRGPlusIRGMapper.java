@@ -95,7 +95,7 @@ public class IRGPlusIRGMapper extends Mapper<LongWritable, Text, Segment, LongWr
     		
     		for(int j = 0; j < length; j++){
     			
-    			int attr = data[j]; 
+    			int attr = data[attrPosition.get(attributes[j])]; 
     		
 	    		if (j >= this.pivot){
 	    			this.segment1.tuple.fields[j] = Tuple.NullValue;

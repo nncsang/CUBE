@@ -18,7 +18,7 @@ public class Checker {
 		Set<String> missedSet = new HashSet<String>();
 		
 		String standardOutputFileName = "output_naive//part-r-00000";
-		String outputFileName = "output_mrcube//part-r-00000";
+		String outputFileName = "output//part-r-00000";
 		
 		FileInputStream fstream = new FileInputStream(standardOutputFileName);
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
