@@ -1,13 +1,8 @@
 package com.hadoop.cube.utils;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Random;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-
 
 
 public class DataCreator {
@@ -24,12 +19,7 @@ public class DataCreator {
 		}
 			
 		System.out.println("Starting to write data");
-		Configuration conf = new Configuration();
-		//conf.addResource(new Path("/etc/hadoop/conf.bigdoop/core-site.xml"));
-		//conf.set("fs.defaultFS", "hdfs://10-10-10-23.openstacklocal:8000");
-		FileSystem fs = FileSystem.get(conf);
-		Path outFile = new Path(args[0]);
-		FSDataOutputStream out = fs.create(outFile);
+		PrintWriter out = new PrintWriter(args[0]);
 		Random random = new Random();
 		long dataSize = Long.parseLong(args[1]) * 1024 * 1024 * 1024;
 		long noYear = Integer.parseInt(args[2]);
@@ -49,7 +39,7 @@ public class DataCreator {
 			if (cnt >= dataSize) {
 				break;
 			}
-			out.writeUTF(writeData);
+			out.println(writeData);
 			if (cnt % oneGB < writeData.length() + 2) {
 				System.out.println((cnt)/oneGB + "GB");
 			}
