@@ -41,8 +41,8 @@ public class MRCube extends Configured implements Tool{
 	private Path inputPath;
 	private Path outputDir;
 	private int tupleLength;
-	private int reducerLimit;
-	private int dataSize;
+	private long reducerLimit;
+	private long dataSize;
 	public static void main(String args[]) throws Exception {
 		int res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
@@ -61,7 +61,7 @@ public class MRCube extends Configured implements Tool{
 		this.numReducers = Integer.parseInt(args[2]);
 		this.tupleLength = Integer.parseInt(args[3]);
 		this.reducerLimit = Integer.parseInt(args[4]);
-		this.dataSize = Integer.parseInt(args[5]);
+		this.dataSize = Long.parseLong(args[5]);
 		Tuple.setLength(tupleLength);
 	}
 
@@ -128,8 +128,8 @@ class MRCubeEstimate extends Configured implements Tool{
 	private Path inputPath;
 	private Path outputDir;
 	private int tupleLength;
-	private int reducerLimit;
-	private int dataSize;
+	private long reducerLimit;
+	private long dataSize;
 	
 	public MRCubeEstimate(String[] args) {
 		if (args.length != 6) {
@@ -141,8 +141,8 @@ class MRCubeEstimate extends Configured implements Tool{
 		this.outputDir = new Path("output_mrcube_estimate");
 		this.numReducers = Integer.parseInt(args[2]);
 		this.tupleLength = Integer.parseInt(args[3]);
-		this.reducerLimit = Integer.parseInt(args[4]);
-		this.dataSize = Integer.parseInt(args[5]);
+		this.reducerLimit = Long.parseLong(args[4]);
+		this.dataSize = Long.parseLong(args[5]);
 		Tuple.setLength(tupleLength);
 	}
 	
@@ -195,8 +195,12 @@ class MRCubeEstimate extends Configured implements Tool{
 		
 		regionList = regionList.substring(0, regionList.length() - 1);
 		
+		long nNeededTuple = (long)(100 * this.dataSize/ this.reducerLimit);
+		int RANDOM_RATE = (int) (nNeededTuple / (double) this.dataSize) * 100 + 5;
+		
 		estimateJob.getConfiguration().set("attributes", Utils.join(attributes, GlobalSettings.DELIM_BETWEEN_ATTRIBUTES));
 		estimateJob.getConfiguration().set("regionList", regionList);
+		estimateJob.getConfiguration().set("RANDOM_RATE", Integer.toString(RANDOM_RATE));
 		
 		estimateJob.setJarByClass(MRCubeEstimate.class);
 		estimateJob.waitForCompletion(true);
@@ -210,8 +214,8 @@ class MRCubeIntermediate extends Configured implements Tool{
 	private Path inputPath;
 	private Path outputDir;
 	private int tupleLength;
-	private int reducerLimit;
-	private int dataSize;
+	private long reducerLimit;
+	private long dataSize;
 	
 	public MRCubeIntermediate(String[] args) {
 		if (args.length != 6) {
@@ -223,8 +227,8 @@ class MRCubeIntermediate extends Configured implements Tool{
 		this.outputDir = new Path("output_mrcube_intermediate");
 		this.numReducers = Integer.parseInt(args[2]);
 		this.tupleLength = Integer.parseInt(args[3]);
-		this.reducerLimit = Integer.parseInt(args[4]);
-		this.dataSize = Integer.parseInt(args[5]);
+		this.reducerLimit = Long.parseLong(args[4]);
+		this.dataSize = Long.parseLong(args[5]);
 		Tuple.setLength(tupleLength);
 	}
 	
@@ -281,11 +285,11 @@ class MRCubeIntermediate extends Configured implements Tool{
 		CubeLattice cube = new CubeLattice(attributes);
 		List<Cuboid> cuboids = cube.cuboids();
 		
-		int nNeededTuple = (int)(100 * this.dataSize/ this.reducerLimit);
-		GlobalSettings.RANDOM_RATE = (int) (nNeededTuple / (float) this.dataSize) * 100 + 5;
-		int expectedSamplingSize = (int) (this.dataSize * GlobalSettings.RANDOM_RATE / 100.0);
-		int realSamplingSize = 0;
-		int reducerLimitForSampling = 0;
+		long nNeededTuple = (long)(100 * this.dataSize/ this.reducerLimit);
+		int RANDOM_RATE = (int) (nNeededTuple / (double) this.dataSize) * 100 + 5;
+		long expectedSamplingSize = (int) (this.dataSize * RANDOM_RATE / 100.0);
+		long realSamplingSize = 0;
+		long reducerLimitForSampling = 0;
 		
 		try{
 	        FileStatus[] status = fs.listStatus(new Path("output_mrcube_estimate"));

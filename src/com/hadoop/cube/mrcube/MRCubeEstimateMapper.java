@@ -26,14 +26,14 @@ public class MRCubeEstimateMapper extends Mapper<LongWritable, Text, Segment, Lo
 	public static LongWritable one = new LongWritable(1);
 	private List<Cuboid> regions;
 	private int[] data = new int[Tuple.length];
-	
+	private int RANDOM_RATE = 0;
 	@Override
     protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
         Configuration conf = context.getConfiguration();
         
 		String[] regionListString = conf.get("regionList").split(GlobalSettings.DELIM_BETWEEN_CONTENTS_OF_TUPLE);
-		
+		RANDOM_RATE = Integer.parseInt(conf.get("RANDOM_RATE"));
 		this.regions = new ArrayList<Cuboid>();
 		
 		for(int i = 0; i < regionListString.length; i++){
@@ -54,7 +54,7 @@ public class MRCubeEstimateMapper extends Mapper<LongWritable, Text, Segment, Lo
 		
 		
     	int random = Utils.randInt(0, 100);
-    	if (random > GlobalSettings.RANDOM_RATE)
+    	if (random > RANDOM_RATE)
     		return;
     	
     	int size = regions.size();
