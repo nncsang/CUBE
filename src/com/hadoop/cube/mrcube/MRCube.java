@@ -45,7 +45,8 @@ public class MRCube extends Configured implements Tool{
 	private long dataSize;
 	public static void main(String args[]) throws Exception {
 		int res = 0;
-		//res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
+		
+		res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
@@ -310,6 +311,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 	            	if (id == 0){
 	            		realSamplingSize = maxTuple;
 	            		reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * realSamplingSize;
+	            		System.out.println(reducerLimitForSampling);
 	            	}
 	            	
 	            	if (maxTuple > reducerLimitForSampling){
@@ -373,7 +375,8 @@ class MRCubeIntermediate extends Configured implements Tool{
 			bucsStr += bucs.get(i).convertToString() + "z";
 			//bucs.get(i).printSortSegments(bucs.get(i).sortSegments);
 		}
-		bucsStr += bucs.get(bucs.size() - 1).convertToString();
+		if(bucs.size() >= 1)
+			bucsStr += bucs.get(bucs.size() - 1).convertToString();
 		
 		
 		job.getConfiguration().set("nBatch", Integer.toString(bucs.size()));
