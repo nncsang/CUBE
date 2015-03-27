@@ -25,7 +25,7 @@ public class MRCubeEstimateCombiner extends Reducer<Segment,
 		for (LongWritable lw : value) {
 		    sum += lw.get();
 		}
-		one.set(sum);
+		//one.set(sum);
 		
 		context.write(key, one);
 	}
