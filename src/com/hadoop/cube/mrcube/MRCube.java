@@ -352,6 +352,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 		
 		List<List<Integer>> partitionOrder = new ArrayList<List<Integer>>();
 		
+		
 		for(Batch batch: cube.friendlyBatches){
 			/** CHECK THIS OUT for root is friendly**/
 			BUC buc = new BUC(batch);
@@ -362,8 +363,16 @@ class MRCubeIntermediate extends Configured implements Tool{
 			partitionOrder.add(batch.cuboids.get(0).numPresentation);
 		}
 		
-		Segment.partitionOrder = partitionOrder;
-		Segment.updateSortOrder();
+		
+		
+		String partitionOrderStr = "";
+		for(int i = 0; i < partitionOrder.size() - 1; i++){
+			partitionOrderStr += Utils.joinI(partitionOrder.get(i), "-") + ",";
+		}
+		
+		if (partitionOrder.size() >= 1){
+			partitionOrderStr += Utils.joinI(partitionOrder.get(partitionOrder.size() - 1), "-");
+		}
 		
 		String bucsStr = "";
 		for(int i = 0; i < bucs.size() - 1; i++){
@@ -377,9 +386,9 @@ class MRCubeIntermediate extends Configured implements Tool{
 		job.getConfiguration().set("nBatch", Integer.toString(bucs.size()));
 		job.getConfiguration().set("unfriendlyBatches", unfriendlyBatches);
 		job.getConfiguration().set("bucsStr", bucsStr);
+		job.getConfiguration().set("partitionOrderStr", partitionOrderStr);
 		
 		job.waitForCompletion(true);
-		
 		
 		return 0;
 	}

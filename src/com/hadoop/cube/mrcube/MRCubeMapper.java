@@ -30,7 +30,7 @@ public class MRCubeMapper extends Mapper<LongWritable, Text, Segment, LongWritab
 	public List<Batch> unfriendlyBatches;
 	public Tuple tuple;
 	private LongWritable sum = new LongWritable(0);
-	private int[] data = new int[6];
+	private int[] data = new int[Tuple.length];
 	
 	@Override
     protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
@@ -49,6 +49,25 @@ public class MRCubeMapper extends Mapper<LongWritable, Text, Segment, LongWritab
         	Segment.partitionFactor.add(batch.partition_factor);
         }
         
+        
+        String partitionOrderStr[] = conf.get("partitionOrderStr").split(",");
+        
+        List<List<Integer>> partitionOrder = new ArrayList<List<Integer>>();
+        
+        for(String str: partitionOrderStr){
+        	String ins[] = str.split("-");
+        	List<Integer> list = new ArrayList<Integer>();
+        	
+        	for(String intStr: ins){
+        		list.add(Integer.parseInt(intStr));
+        	}
+        	partitionOrder.add(list);
+        }
+        
+        
+        Segment.partitionOrder = partitionOrder;
+		Segment.updateSortOrder();
+        
         nullArray = new int[Tuple.length];
         Arrays.fill(nullArray, -1);
     }
@@ -63,7 +82,6 @@ public class MRCubeMapper extends Mapper<LongWritable, Text, Segment, LongWritab
 		}
 		
 		sum.set(Integer.parseInt(values[Tuple.length]));
-
     	
     	for(int i = 0; i < unfriendlyBatches.size(); i++){
     		Cuboid cuboid = unfriendlyBatches.get(i).cuboids.get(0);
