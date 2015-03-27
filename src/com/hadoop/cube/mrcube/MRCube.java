@@ -45,7 +45,7 @@ public class MRCube extends Configured implements Tool{
 	private long dataSize;
 	public static void main(String args[]) throws Exception {
 		int res = 0;
-		//res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
+		res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
@@ -290,7 +290,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 		int RANDOM_RATE = (int) (nNeededTuple / (double) this.dataSize) * 100 + 5;
 		long expectedSamplingSize = (int) (this.dataSize * RANDOM_RATE / 100.0);
 		long realSamplingSize = 0;
-		long reducerLimitForSampling = 0;
+		long reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * expectedSamplingSize;
 		
 		try{
 	        FileStatus[] status = fs.listStatus(new Path("output_mrcube_estimate"));
@@ -307,11 +307,8 @@ class MRCubeIntermediate extends Configured implements Tool{
 	            	int id = Integer.parseInt(parts[0]);
 	            	
 	            	int maxTuple = Integer.parseInt(parts[1]);
-	            	if (id == 0){
-	            		realSamplingSize = maxTuple;
-	            		reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * expectedSamplingSize;
-	            		System.out.println(reducerLimitForSampling);
-	            	}
+	            	
+	            	System.out.println(reducerLimitForSampling);
 	            	
 	            	if (maxTuple > reducerLimitForSampling){
 	            		System.out.println("*");

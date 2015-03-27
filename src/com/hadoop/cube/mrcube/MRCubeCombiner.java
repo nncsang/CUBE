@@ -18,6 +18,8 @@ public class MRCubeCombiner extends Reducer<Segment,
 		//System.out.println("COMBINER");
 	}
 	
+	private LongWritable SUM = new LongWritable(0);
+	
 	@Override
 	protected void reduce(Segment key, Iterable<LongWritable> value, Context context)
 	    throws IOException, InterruptedException {
@@ -25,7 +27,9 @@ public class MRCubeCombiner extends Reducer<Segment,
 		for (LongWritable lw : value) {
 		    sum += lw.get();
 		}
-		context.write(key, new LongWritable(sum));
+		
+		SUM.set(sum);
+		context.write(key, SUM);
 		//System.out.println(key);
 	}
 }
