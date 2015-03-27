@@ -45,7 +45,7 @@ public class MRCube extends Configured implements Tool{
 	private long dataSize;
 	public static void main(String args[]) throws Exception {
 		int res = 0;
-		res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
+		//res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
@@ -289,8 +289,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 		long nNeededTuple = (long)(100 * this.dataSize/ this.reducerLimit);
 		int RANDOM_RATE = (int) (nNeededTuple / (double) this.dataSize) * 100 + 5;
 		long expectedSamplingSize = (int) (this.dataSize * RANDOM_RATE / 100.0);
-		long realSamplingSize = 0;
-		long reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * expectedSamplingSize;
+		long reducerLimitForSampling = (int) ((this.reducerLimit / (float)this.dataSize) * expectedSamplingSize);
 		
 		try{
 	        FileStatus[] status = fs.listStatus(new Path("output_mrcube_estimate"));
