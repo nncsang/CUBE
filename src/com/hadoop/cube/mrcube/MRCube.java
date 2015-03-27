@@ -302,7 +302,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 	            line=brIn.readLine();
 	 
 	            while (line != null){
-	            	//System.out.println(line);
+	            	System.out.println(line);
 	            	String[] parts = line.split("\t");
 	            	int id = Integer.parseInt(parts[0]);
 	            	
@@ -310,11 +310,11 @@ class MRCubeIntermediate extends Configured implements Tool{
 	            	if (id == 0){
 	            		realSamplingSize = maxTuple;
 	            		reducerLimitForSampling = (int) (this.reducerLimit / (float)this.dataSize) * expectedSamplingSize;
-	            		//System.out.println(reducerLimitForSampling);
+	            		System.out.println(reducerLimitForSampling);
 	            	}
 	            	
 	            	if (maxTuple > reducerLimitForSampling){
-	            		//System.out.println("*");
+	            		System.out.println("*");
 	            		cuboids.get(id).setFriendly(false);
 	            		cuboids.get(id).setPartitionFactor((int) (maxTuple / (float) reducerLimitForSampling) + 1);
 	            	}
