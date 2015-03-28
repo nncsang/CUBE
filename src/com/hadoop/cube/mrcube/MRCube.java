@@ -322,12 +322,15 @@ class MRCubeIntermediate extends Configured implements Tool{
 	    }
 		
 		/** for testing */
-		if (cuboids.get(0).isFriendly == true){
+		//if (cuboids.get(0).isFriendly == true){
 			cuboids.get(0).setFriendly(false);
 			cuboids.get(0).setPartitionFactor(5);
 			
 			cuboids.get(1).setFriendly(false);
 			cuboids.get(1).setPartitionFactor(5);
+			
+			cuboids.get(2).setFriendly(false);
+			cuboids.get(2).setPartitionFactor(5);
 			
 			cuboids.get(4).setFriendly(false);
 			cuboids.get(4).setPartitionFactor(5);
@@ -341,10 +344,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 			cuboids.get(32).setFriendly(false);
 			cuboids.get(32).setPartitionFactor(5);
 			
-			cuboids.get(64).setFriendly(false);
-			cuboids.get(64).setPartitionFactor(5);
-			
-		}
+		//}
 		
 		cube.batching();
 		
