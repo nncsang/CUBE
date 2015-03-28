@@ -27,19 +27,39 @@ public class main {
 		//String[] attributes = {"A", "B", "C"};
 		CubeLattice cube = new CubeLattice(attributes);
 		List<Cuboid> cuboids = cube.cuboids();
-		cuboids.get(29).setFriendly(false);
-		cuboids.get(46).setFriendly(false);
-		cuboids.get(39).setFriendly(false);
-		cuboids.get(51).setFriendly(false);
-		cuboids.get(45).setFriendly(false);
-		cuboids.get(30).setFriendly(false);
-		cuboids.get(11).setFriendly(false);
-		cuboids.get(58).setFriendly(false);
-		cuboids.get(54).setFriendly(false);
-		cuboids.get(59).setFriendly(false);
-		cuboids.get(53).setFriendly(false);
-		cuboids.get(57).setFriendly(false);
+//		cuboids.get(29).setFriendly(false);
+//		cuboids.get(46).setFriendly(false);
+//		cuboids.get(39).setFriendly(false);
+//		cuboids.get(51).setFriendly(false);
+//		cuboids.get(45).setFriendly(false);
+//		cuboids.get(30).setFriendly(false);
+//		cuboids.get(11).setFriendly(false);
+//		cuboids.get(58).setFriendly(false);
+//		cuboids.get(54).setFriendly(false);
+//		cuboids.get(59).setFriendly(false);
+//		cuboids.get(53).setFriendly(false);
+//		cuboids.get(57).setFriendly(false);
 		
+		cuboids.get(0).setFriendly(false);
+		cuboids.get(0).setPartitionFactor(5);
+		
+		cuboids.get(1).setFriendly(false);
+		cuboids.get(1).setPartitionFactor(5);
+		
+		cuboids.get(2).setFriendly(false);
+		cuboids.get(2).setPartitionFactor(5);
+		
+		cuboids.get(4).setFriendly(false);
+		cuboids.get(4).setPartitionFactor(5);
+		
+		cuboids.get(8).setFriendly(false);
+		cuboids.get(8).setPartitionFactor(5);
+		
+		cuboids.get(16).setFriendly(false);
+		cuboids.get(16).setPartitionFactor(5);
+		
+		cuboids.get(32).setFriendly(false);
+		cuboids.get(32).setPartitionFactor(5);
 		//cuboids.get(1).setFriendly(false);
 		
 		cube.printCuboids();
