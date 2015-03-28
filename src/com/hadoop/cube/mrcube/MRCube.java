@@ -45,7 +45,7 @@ public class MRCube extends Configured implements Tool{
 	private long dataSize;
 	public static void main(String args[]) throws Exception {
 		int res = 0;
-		//res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
+		res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
@@ -322,7 +322,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 	    }
 		
 		/** for testing */
-		//if (cuboids.get(0).isFriendly == true){
+		if (cuboids.get(0).isFriendly == true){
 			cuboids.get(0).setFriendly(false);
 			cuboids.get(0).setPartitionFactor(5);
 			
@@ -344,7 +344,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 			cuboids.get(32).setFriendly(false);
 			cuboids.get(32).setPartitionFactor(5);
 			
-		//}
+		}
 		
 		cube.batching();
 		
