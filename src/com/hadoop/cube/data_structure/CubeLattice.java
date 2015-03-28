@@ -165,7 +165,7 @@ public class CubeLattice {
 			if (root == null)
 				return;
 			
-			System.out.println("Considering " + root + "\n");
+			//System.out.println("Considering " + root + "\n");
 //			if (root.toString().equals("A,B,C,*,E,F"))
 //				root = root;
 			
