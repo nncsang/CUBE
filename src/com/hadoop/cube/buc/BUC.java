@@ -24,6 +24,14 @@ public class BUC {
 	public Context context;
 	public LongWritable long_writable = new LongWritable(0);
 	
+	public void clear(){
+		tuples.clear();
+		partitionDim.clear();
+		prevTuple = null;
+		cuboids.clear();
+		long_writable = null;
+	}
+	
 	public void print(){
 		for(Cuboid cuboid : cuboids){
 			System.out.println(Utils.joinI(cuboid.numPresentation, ""));
@@ -94,7 +102,7 @@ public class BUC {
 	
 	public void finish(){
 		buc(tuples, cuboids, 0);
-		tuples.clear();
+		clear();
 	}
 	
 	public boolean isNewPartition(Tuple tuple){

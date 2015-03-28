@@ -27,7 +27,19 @@ public class main {
 		//String[] attributes = {"A", "B", "C"};
 		CubeLattice cube = new CubeLattice(attributes);
 		List<Cuboid> cuboids = cube.cuboids();
-		//cuboids.get(0).setFriendly(false);
+		cuboids.get(29).setFriendly(false);
+		cuboids.get(46).setFriendly(false);
+		cuboids.get(39).setFriendly(false);
+		cuboids.get(51).setFriendly(false);
+		cuboids.get(45).setFriendly(false);
+		cuboids.get(30).setFriendly(false);
+		cuboids.get(11).setFriendly(false);
+		cuboids.get(58).setFriendly(false);
+		cuboids.get(54).setFriendly(false);
+		cuboids.get(59).setFriendly(false);
+		cuboids.get(53).setFriendly(false);
+		cuboids.get(57).setFriendly(false);
+		
 		//cuboids.get(1).setFriendly(false);
 		
 		cube.printCuboids();
@@ -43,16 +55,16 @@ public class main {
 //		tuples.add(new Tuple(1987,	-1,	15,	1451,	81856,	82012));
 //		tuples.add(new Tuple(1987,	-1,	17,	1451,	81856,	82012));
 //		tuples.add(new Tuple(1987,	-1,	18,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	14,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	15,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	17,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	18,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	19,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	21,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	22,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	23,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	24,	1451,	81856,	82012));
-		tuples.add(new Tuple(1987,	10,	25,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	14,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	15,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	17,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	18,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	19,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	21,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	22,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	23,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	24,	1451,	81856,	82012));
+//		tuples.add(new Tuple(1987,	10,	25,	1451,	81856,	82012));
 		
 //		tuples.add(new Tuple(1987,	-1,	21,	1451,	81856,	82012));
 //		tuples.add(new Tuple(1987,	-1,	22,	1451,	81856,	82012));
@@ -61,11 +73,11 @@ public class main {
 //		tuples.add(new Tuple(1987,	-1,	25,	1451,	81856,	82012));
 		
 		
-		for(Tuple tuple: tuples){
-			buc.addTuple(tuple, 1);
-		}
-		
-		buc.finish();
+//		for(Tuple tuple: tuples){
+//			buc.addTuple(tuple, 1);
+//		}
+//		
+//		buc.finish();
 		
 		//cube.printStructure();
 		

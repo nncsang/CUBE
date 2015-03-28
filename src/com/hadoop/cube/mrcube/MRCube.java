@@ -248,7 +248,6 @@ class MRCubeIntermediate extends Configured implements Tool{
 		job.setMapOutputValueClass(LongWritable.class);
 		
 		job.setPartitionerClass(MRCubePartitioner.class);
-		//job.setSortComparatorClass(IRGPlusIRGSorter.class);
 		
 		// set reduce class and the reduce output key and value classes
 		job.setReducerClass(MRCubeReducer.class);
