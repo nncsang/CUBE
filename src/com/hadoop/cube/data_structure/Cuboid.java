@@ -23,7 +23,7 @@ public class Cuboid implements Comparable<Cuboid>{
 		
 		level = Integer.parseInt(parts[0]);
 		
-		//System.out.println(parts[1]);
+		//System.out.println(str);
 		String[] atts = parts[1].split("_");
 		attributes = new String[atts.length];
 		for(int i = 0; i < attributes.length; i++)
@@ -44,7 +44,8 @@ public class Cuboid implements Comparable<Cuboid>{
 		String str = "";
 		str += Integer.toString(level) + "a";
 		str += Utils.join(attributes, "_") + "a";
-		str += Utils.joinI(numPresentation, "_") + "a";
+		str += Utils.joinI(numPresentation, "_");
+		//System.out.println("Convert: " + str);
 		return str;
 	}
 	

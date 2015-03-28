@@ -16,7 +16,7 @@ public class Batch {
 	}
 	
 	public boolean isFriendly(){
-		return true;
+		return isFriendly;
 	}
 	
 	public Batch(String str){

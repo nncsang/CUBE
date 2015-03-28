@@ -60,7 +60,7 @@ public class BUC {
 		Arrays.fill(nullArray, -1);	
 		
 		String[] parts = str.split("b");
-		String[] cuboidStrs = str.split(";");
+		String[] cuboidStrs = parts[0].split(";");
 		
 		for(String s: cuboidStrs){
 			cuboids.add(new Cuboid(s));
