@@ -306,7 +306,7 @@ public class CubeLattice {
 	public boolean checkSizeContraint(){
 		for(int i = 0; i < friendlyBatches.size(); i++)
 			for(int j = 0; j < friendlyBatches.size(); j++)
-				if (Math.abs(friendlyBatches.get(i).cuboids.size() - friendlyBatches.get(j).cuboids.size()) > 3)
+				if (Math.abs(friendlyBatches.get(i).cuboids.size() - friendlyBatches.get(j).cuboids.size()) > GlobalSettings. BATCH_SIZE_DIFF_THRES)
 					return false;
 		return true;
 	}
