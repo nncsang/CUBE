@@ -45,7 +45,7 @@ public class MRCube extends Configured implements Tool{
 	private long dataSize;
 	public static void main(String args[]) throws Exception {
 		int res = 0;
-		//res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
+		res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
 		res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
@@ -319,15 +319,15 @@ class MRCubeIntermediate extends Configured implements Tool{
 	        expectedSamplingSize = nums.get(size); 
 	        reducerLimitForSampling = (long) ((this.reducerLimit / (float)this.dataSize) * expectedSamplingSize);
 	        
-	        System.out.println(expectedSamplingSize);
-	        System.out.println(reducerLimitForSampling);
+	        //System.out.println(expectedSamplingSize);
+	        //System.out.println(reducerLimitForSampling);
 	        for(int i = 0; i < size; i++){
-	        	System.out.println(i + ": " + nums.get(i).toString());
+	        	//System.out.println(i + ": " + nums.get(i).toString());
 	        	
 	        	if (nums.get(i) > reducerLimitForSampling){
-            		System.out.println("*");
-            		cuboids.get(i).setFriendly(false);
-            		cuboids.get(i).setPartitionFactor((int) (nums.get(i) / (float) reducerLimitForSampling) + 1);
+            		//System.out.println("*");
+            		//cuboids.get(i).setFriendly(false);
+            		//cuboids.get(i).setPartitionFactor((int) (nums.get(i) / (float) reducerLimitForSampling) + 1);
             	}
 	        }
 	 
@@ -336,29 +336,29 @@ class MRCubeIntermediate extends Configured implements Tool{
 	    }
 		
 		/** for testing */
-		if (cuboids.get(0).isFriendly == true){
+		//if (cuboids.get(0).isFriendly == true){
 			cuboids.get(0).setFriendly(false);
-			cuboids.get(0).setPartitionFactor(5);
+			cuboids.get(0).setPartitionFactor(4);
 			
-//			cuboids.get(1).setFriendly(false);
-//			cuboids.get(1).setPartitionFactor(5);
-//			
-//			cuboids.get(2).setFriendly(false);
-//			cuboids.get(2).setPartitionFactor(5);
-//			
-//			cuboids.get(4).setFriendly(false);
-//			cuboids.get(4).setPartitionFactor(5);
-//			
-//			cuboids.get(8).setFriendly(false);
-//			cuboids.get(8).setPartitionFactor(5);
-//			
-//			cuboids.get(16).setFriendly(false);
-//			cuboids.get(16).setPartitionFactor(5);
-//			
-//			cuboids.get(32).setFriendly(false);
-//			cuboids.get(32).setPartitionFactor(5);
+			cuboids.get(1).setFriendly(false);
+			cuboids.get(1).setPartitionFactor(4);
 			
-		}
+			cuboids.get(2).setFriendly(false);
+			cuboids.get(2).setPartitionFactor(4);
+			
+			cuboids.get(4).setFriendly(false);
+			cuboids.get(4).setPartitionFactor(4);
+			
+			cuboids.get(8).setFriendly(false);
+			cuboids.get(8).setPartitionFactor(4);
+			
+			cuboids.get(16).setFriendly(false);
+			cuboids.get(16).setPartitionFactor(4);
+			
+			cuboids.get(32).setFriendly(false);
+			cuboids.get(32).setPartitionFactor(4);
+			
+		//}
 		
 		cube.batching();
 		
