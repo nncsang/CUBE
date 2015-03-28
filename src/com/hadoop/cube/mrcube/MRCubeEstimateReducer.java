@@ -40,6 +40,10 @@ public class MRCubeEstimateReducer extends Reducer<Segment,
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
 		super.cleanup(context);
+		if (currSum > currMax){
+			currMax = currSum;
+			currSum = 0;
+		}
 		context.write(new LongWritable(prevCuboidId), new Text(Long.toString(currMax)));
 	}
 	
@@ -57,7 +61,8 @@ public class MRCubeEstimateReducer extends Reducer<Segment,
 		throws IOException, InterruptedException {
 		
 		//System.out.println(segment);
-		
+//		if (segment.id == 64)
+//			segment.id = 64;
 		long sum = 0;
 		for (LongWritable lw : value) {
 			sum += lw.get();
