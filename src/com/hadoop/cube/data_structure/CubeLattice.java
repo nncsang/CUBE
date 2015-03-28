@@ -165,7 +165,10 @@ public class CubeLattice {
 			if (root == null)
 				return;
 			
-			//System.out.println("Considering " + root + "\n");
+			System.out.println("Considering " + root + "\n");
+//			if (root.toString().equals("A,B,C,*,E,F"))
+//				root = root;
+			
 			findAndJoinBatch(root);
 			
 			if (root.isBatched == false)
@@ -282,22 +285,22 @@ public class CubeLattice {
 				List<Cuboid> cuboids = friendlyBatches.get(index_of_possible_batch.get(i)).cuboids;
 				cuboids.add(root);
 				/** TODO: check!!! **/
-//				if (checkSizeContraint() == true){
-//					root.isBatched = true;
-//					
-//					Collections.sort(friendlyBatches, new Comparator<Batch>(){
-//						@Override
-//						public int compare(Batch arg0,
-//								Batch arg1) {
-//							return arg0.cuboids.size() - arg1.cuboids.size();
-//						}});
-//					
-//					//printBatch(friendlyBatches.get(index_of_possible_batch.get(i)));
-//					//printBatches();
-//					break;
-//				}
-//				else
-//					cuboids.remove(cuboids.size() - 1);
+				if (checkSizeContraint() == true){
+					root.isBatched = true;
+					
+					Collections.sort(friendlyBatches, new Comparator<Batch>(){
+						@Override
+						public int compare(Batch arg0,
+								Batch arg1) {
+							return arg0.cuboids.size() - arg1.cuboids.size();
+						}});
+					
+					//printBatch(friendlyBatches.get(index_of_possible_batch.get(i)));
+					//printBatches();
+					break;
+				}
+				else
+					cuboids.remove(cuboids.size() - 1);
 				break;
 			}
 		}

@@ -37,15 +37,21 @@ public class MRCubeEstimateCombiner extends Reducer<Segment,
 	protected void reduce(Segment key, Iterable<LongWritable> value, Context context)
 	    throws IOException, InterruptedException {
 		
-		if (key.id == special_ids){
-			long sum = 0;
-			for (LongWritable lw : value) {
-			    sum += lw.get();
-			}
-			one.set(sum);
-		}else{
-			one.set(1);
+		long sum = 0;
+		for (LongWritable lw : value) {
+		    sum += lw.get();
 		}
+		one.set(sum);
+		
+//		if (key.id == special_ids){
+//			long sum = 0;
+//			for (LongWritable lw : value) {
+//			    sum += lw.get();
+//			}
+//			one.set(sum);
+//		}else{
+//			one.set(1);
+//		}
 		
 		context.write(key, one);
 	}
