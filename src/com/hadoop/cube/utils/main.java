@@ -40,26 +40,33 @@ public class main {
 //		cuboids.get(53).setFriendly(false);
 //		cuboids.get(57).setFriendly(false);
 		
-//		cuboids.get(0).setFriendly(false);
-//		cuboids.get(0).setPartitionFactor(5);
-//		
-//		cuboids.get(1).setFriendly(false);
-//		cuboids.get(1).setPartitionFactor(5);
-//		
-//		cuboids.get(2).setFriendly(false);
-//		cuboids.get(2).setPartitionFactor(5);
-//		
-//		cuboids.get(4).setFriendly(false);
-//		cuboids.get(4).setPartitionFactor(5);
-//		
-//		cuboids.get(8).setFriendly(false);
-//		cuboids.get(8).setPartitionFactor(5);
-//		
-//		cuboids.get(16).setFriendly(false);
-//		cuboids.get(16).setPartitionFactor(5);
-//		
-//		cuboids.get(32).setFriendly(false);
-//		cuboids.get(32).setPartitionFactor(5);
+		cuboids.get(0).setFriendly(false);
+		cuboids.get(0).setPartitionFactor(5);
+		
+		cuboids.get(1).setFriendly(false);
+		cuboids.get(1).setPartitionFactor(5);
+		
+		cuboids.get(2).setFriendly(false);
+		cuboids.get(2).setPartitionFactor(5);
+		
+		cuboids.get(3).setFriendly(false);
+		cuboids.get(3).setPartitionFactor(5);
+		
+		cuboids.get(4).setFriendly(false);
+		cuboids.get(4).setPartitionFactor(5);
+		
+		cuboids.get(5).setFriendly(false);
+		cuboids.get(8).setPartitionFactor(5);
+		
+		cuboids.get(9).setFriendly(false);
+		cuboids.get(9).setPartitionFactor(5);
+		
+		cuboids.get(16).setFriendly(false);
+		cuboids.get(16).setPartitionFactor(5);
+		
+		cuboids.get(17).setFriendly(false);
+		cuboids.get(17).setPartitionFactor(5);
+		
 		//cuboids.get(1).setFriendly(false);
 		
 		cube.printCuboids();
