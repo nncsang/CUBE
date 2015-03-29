@@ -359,12 +359,12 @@ public class CubeLattice {
 				
 				int index = -1;
 				
-				/** TODO: implement this corner case **/
+				/** TODO: implement this corner case: in mr reducer **/
 				
-				for (int j = 0; j < unfriendlyBatches.size(); j++){
-					if (unfriendlyBatches.get(j).partition_factor == child.partition_factor)
-						index = j;
-				}
+//				for (int j = 0; j < unfriendlyBatches.size(); j++){
+//					if (unfriendlyBatches.get(j).partition_factor == child.partition_factor)
+//						index = j;
+//				}
 				
 				
 				if (index == -1){
