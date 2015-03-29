@@ -87,7 +87,9 @@ public class CubeLattice {
 				}
 			}
 			
-			this.cuboids.add(new Cuboid(cuboid.toArray(new String[cuboid.size()])));
+			Cuboid cb = new Cuboid(cuboid.toArray(new String[cuboid.size()]));
+			cb.id = i;
+			this.cuboids.add(cb);
 		}
 		
 		for(int i = 0; i < this.cuboids.size(); i++){
@@ -118,6 +120,32 @@ public class CubeLattice {
 		}
 	}
 	
+	public void printChildren(Cuboid... cubes){
+		
+		for(Cuboid cube: cubes){
+			List<Cuboid> children = cube.getChildren();
+			System.out.println(cube);
+			for(int i = 0; i < children.size(); i++){
+				Cuboid child = cube.children.get(i);
+				System.out.println("\t" + child);
+			}
+			System.out.println("--------------------------------");
+		}
+	}
+	
+	public void printChildren(List<Cuboid> cubes){
+		
+		for(Cuboid cube: cubes){
+			List<Cuboid> children = cube.getChildren();
+			System.out.println(cube);
+			for(int i = 0; i < children.size(); i++){
+				Cuboid child = cube.children.get(i);
+				System.out.println("\t" + child);
+			}
+			System.out.println("--------------------------------");
+		}
+	}
+
 	public void batching(){
 		friendlyBatches = new ArrayList<Batch>();
 		unfriendlyBatches = new ArrayList<Batch>();

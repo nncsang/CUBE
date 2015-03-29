@@ -17,6 +17,7 @@ public class Cuboid implements Comparable<Cuboid>{
 	public boolean isBatched;
 	public int level;
 	public List<Integer> numPresentation;
+	public int id = -1;
 	
 	public Cuboid(String str){
 		String[] parts = str.split("a");
@@ -77,7 +78,7 @@ public class Cuboid implements Comparable<Cuboid>{
 	
 	@Override
 	public String toString() {
-		return this.string;
+		return this.string + " - " + Integer.toString(this.id);
 	}
 	
 	public int hashCodeWithoutPosition(){

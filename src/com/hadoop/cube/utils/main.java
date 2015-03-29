@@ -27,18 +27,18 @@ public class main {
 		//String[] attributes = {"A", "B", "C"};
 		CubeLattice cube = new CubeLattice(attributes);
 		List<Cuboid> cuboids = cube.cuboids();
-		cuboids.get(29).setFriendly(false);
-		cuboids.get(46).setFriendly(false);
-		cuboids.get(39).setFriendly(false);
-		cuboids.get(51).setFriendly(false);
-		cuboids.get(45).setFriendly(false);
-		cuboids.get(30).setFriendly(false);
-		cuboids.get(11).setFriendly(false);
-		cuboids.get(58).setFriendly(false);
-		cuboids.get(54).setFriendly(false);
-		cuboids.get(59).setFriendly(false);
-		cuboids.get(53).setFriendly(false);
-		cuboids.get(57).setFriendly(false);
+//		cuboids.get(29).setFriendly(false);
+//		cuboids.get(46).setFriendly(false);
+//		cuboids.get(39).setFriendly(false);
+//		cuboids.get(51).setFriendly(false);
+//		cuboids.get(45).setFriendly(false);
+//		cuboids.get(30).setFriendly(false);
+//		cuboids.get(11).setFriendly(false);
+//		cuboids.get(58).setFriendly(false);
+//		cuboids.get(54).setFriendly(false);
+//		cuboids.get(59).setFriendly(false);
+//		cuboids.get(53).setFriendly(false);
+//		cuboids.get(57).setFriendly(false);
 		
 //		cuboids.get(0).setFriendly(false);
 //		cuboids.get(0).setPartitionFactor(5);
@@ -63,13 +63,14 @@ public class main {
 		//cuboids.get(1).setFriendly(false);
 		
 		cube.printCuboids();
-		cube.batching();
-		cube.printBatches();
+		cube.printChildren(cuboids);
+//		cube.batching();
+//		cube.printBatches();
 		
 		
-		BUC buc = new BUC(cube.friendlyBatches.get(0));
-		buc.print();
-		List<Tuple> tuples = new ArrayList<Tuple>();
+//		BUC buc = new BUC(cube.friendlyBatches.get(0));
+//		buc.print();
+//		List<Tuple> tuples = new ArrayList<Tuple>();
 		
 //		tuples.add(new Tuple(1987,	-1,	14,	1451,	81856,	82012));
 //		tuples.add(new Tuple(1987,	-1,	15,	1451,	81856,	82012));

@@ -61,27 +61,30 @@ public class MRCubeEstimateReducer extends Reducer<Segment,
 		throws IOException, InterruptedException {
 		
 		//System.out.println(segment);
-//		if (segment.id == 64)
-//			segment.id = 64;
+		
+		
 		long sum = 0;
 		for (LongWritable lw : value) {
 			sum += lw.get();
 		}
 		
+//		if (segment.id == 7 || segment.id == 15){
+//			System.out.println(segment + "\t" + sum);
+//		}
 		Tuple tuple = new Tuple(segment.tuple.fields);
 		if (segment.id == prevCuboidId){
 			if (tuple.compareTo(preTuple) != 0){
 				if (currSum > currMax){
 					currMax = currSum;
-					currSum = 0;
 				}
+				currSum = 0;
 			}
 		}else{
 			if (prevCuboidId != -1){
 				if (currSum > currMax){
 					currMax = currSum;
-					currSum = 0;
 				}
+				currSum = 0;
 				context.write(new LongWritable(prevCuboidId), new Text(Long.toString(currMax)));
 			}
 			currMax = -1;
