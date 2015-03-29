@@ -56,6 +56,9 @@ public class main {
 		cuboids.get(4).setPartitionFactor(5);
 		
 		cuboids.get(5).setFriendly(false);
+		cuboids.get(5).setPartitionFactor(5);
+		
+		cuboids.get(8).setFriendly(false);
 		cuboids.get(8).setPartitionFactor(5);
 		
 		cuboids.get(9).setFriendly(false);
@@ -67,12 +70,17 @@ public class main {
 		cuboids.get(17).setFriendly(false);
 		cuboids.get(17).setPartitionFactor(5);
 		
+		cuboids.get(32).setFriendly(false);
+		cuboids.get(32).setPartitionFactor(5);
+		
+		cuboids.get(33).setFriendly(false);
+		cuboids.get(33).setPartitionFactor(5);
 		//cuboids.get(1).setFriendly(false);
 		
 		cube.printCuboids();
 		cube.printChildren(cuboids);
-//		cube.batching();
-//		cube.printBatches();
+		cube.batching();
+		cube.printBatches();
 		
 		
 //		BUC buc = new BUC(cube.friendlyBatches.get(0));
