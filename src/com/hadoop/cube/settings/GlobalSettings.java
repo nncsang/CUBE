@@ -12,5 +12,5 @@ public class GlobalSettings {
 	public static boolean ISDEBUG = false;
 	public static int RANDOM_RATE = 10;
 	public static CubeLattice cube;
-	public static int BATCH_SIZE_DIFF_THRES = 3;
+	public static int BATCH_SIZE_DIFF_THRES = 2;
 }
