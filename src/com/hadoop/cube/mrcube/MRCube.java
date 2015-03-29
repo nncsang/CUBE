@@ -340,23 +340,23 @@ class MRCubeIntermediate extends Configured implements Tool{
 			cuboids.get(0).setFriendly(false);
 			cuboids.get(0).setPartitionFactor(2);
 			
-//			cuboids.get(1).setFriendly(false);
-//			cuboids.get(1).setPartitionFactor(2);
-//			
-//			cuboids.get(2).setFriendly(false);
-//			cuboids.get(2).setPartitionFactor(2);
-//			
-//			cuboids.get(4).setFriendly(false);
-//			cuboids.get(4).setPartitionFactor(2);
-//			
-//			cuboids.get(8).setFriendly(false);
-//			cuboids.get(8).setPartitionFactor(2);
-//			
-//			cuboids.get(16).setFriendly(false);
-//			cuboids.get(16).setPartitionFactor(2);
-//			
-//			cuboids.get(32).setFriendly(false);
-//			cuboids.get(32).setPartitionFactor(2);
+			cuboids.get(1).setFriendly(false);
+			cuboids.get(1).setPartitionFactor(2);
+			
+			cuboids.get(2).setFriendly(false);
+			cuboids.get(2).setPartitionFactor(2);
+			
+			cuboids.get(4).setFriendly(false);
+			cuboids.get(4).setPartitionFactor(2);
+			
+			cuboids.get(8).setFriendly(false);
+			cuboids.get(8).setPartitionFactor(2);
+			
+			cuboids.get(16).setFriendly(false);
+			cuboids.get(16).setPartitionFactor(2);
+			
+			cuboids.get(32).setFriendly(false);
+			cuboids.get(32).setPartitionFactor(2);
 			
 		}
 		
