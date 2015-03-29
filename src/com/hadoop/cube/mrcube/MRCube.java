@@ -411,6 +411,8 @@ class MRCubeIntermediate extends Configured implements Tool{
 		if(bucs.size() >= 1)
 			bucsStr += bucs.get(bucs.size() - 1).convertToString();
 		
+		System.out.println("Number of friendly batch: " + cube.friendlyBatches.size());
+		System.out.println("Number of unfriendly batch: " + cube.unfriendlyBatches.size());
 		
 		job.getConfiguration().set("nBatch", Integer.toString(bucs.size()));
 		job.getConfiguration().set("unfriendlyBatches", unfriendlyBatches);
