@@ -49,6 +49,20 @@ public class Checker {
 		}
 		
 		
+		fstream = new FileInputStream("output_mrcube_intermediate/friendly-r-00000");
+		br = new BufferedReader(new InputStreamReader(fstream));
+		
+		
+		while ((strLine = br.readLine()) != null)   {
+			size++;
+			if (standardOutput.contains(strLine)){
+				standardOutput.remove(strLine);
+			}else{
+				doubleOrWrong.add(strLine);
+				numDoubleOrWrong++;
+			}
+		}
+		
 		System.out.println("My output size:\t\t" + size);
 		System.out.println("Double or Wrong:\t" + numDoubleOrWrong);
 		br.close();

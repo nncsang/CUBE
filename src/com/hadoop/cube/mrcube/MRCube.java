@@ -104,7 +104,7 @@ public class MRCube extends Configured implements Tool{
 
         // add the input file as job input (from HDFS) to the variable
         // inputFile
-        FileInputFormat.addInputPath(aggregating_job, new Path("output_mrcube_intermediate/part*"));
+        FileInputFormat.addInputPath(aggregating_job, new Path("output_mrcube_intermediate/" + GlobalSettings.UNFRIENDLY_OUTPUT_PATH + "/*"));
 
         // set the output path for the job results (to HDFS) to the
         // variable
@@ -118,7 +118,7 @@ public class MRCube extends Configured implements Tool{
         aggregating_job.setJarByClass(MRCube.class);
 
         aggregating_job.waitForCompletion(true);
-		//Checker.main(null);
+		Checker.main(null);
 		return 0;
 	}
 }
@@ -276,6 +276,11 @@ class MRCubeIntermediate extends Configured implements Tool{
 			fs.delete(outputDir, true);
 		}
 		
+		Path unfriendlyOutputDir = new Path("output_mrcube_intermediate/" + GlobalSettings.UNFRIENDLY_OUTPUT_PATH); 
+		if(fs.exists(unfriendlyOutputDir)){
+			fs.delete(unfriendlyOutputDir, true);
+		}
+		
 		//CubeLattice cube = GlobalSettings.cube;
 		String[] attributes = new String[this.tupleLength];
 		for(int i = 0; i < this.tupleLength; i++)
@@ -362,7 +367,10 @@ class MRCubeIntermediate extends Configured implements Tool{
 		
 		cube.batching();
 		
-		MultipleOutputs.addNamedOutput(job, "tmp", SequenceFileOutputFormat.class, Tuple.class, LongWritable.class);
+		//MultipleOutputs.addNamedOutput(job, "friendly", SequenceFileOutputFormat.class, Tuple.class, LongWritable.class);
+		MultipleOutputs.addNamedOutput(job, "unfriendly", SequenceFileOutputFormat.class, Tuple.class, LongWritable.class);
+		MultipleOutputs.addNamedOutput(job, "friendly", TextOutputFormat.class, Tuple.class, LongWritable.class);
+		
 		FileOutputFormat.setOutputPath(job, outputDir);
 
 		// set the number of reducers using variable numberReducers

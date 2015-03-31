@@ -12,6 +12,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
 import com.hadoop.cube.buc.BUC;
 import com.hadoop.cube.data_structure.Cuboid;
@@ -37,6 +38,8 @@ public class MRCubeReducer extends Reducer<Segment,
 	LongWritable long_writable = new LongWritable(0);
 	int count = 0;
 	
+	private MultipleOutputs out;
+	private MultipleOutputs out1;
 	public MRCubeReducer() {
 		
 	}
@@ -48,8 +51,10 @@ public class MRCubeReducer extends Reducer<Segment,
 		currBUC.finish();
 		if (prevId != 0){
 			long_writable.set(SUM);
-			context.write(prevTuple, long_writable);
+			out1.write("friendly", prevTuple, long_writable);
 		}
+		out.close();
+		out1.close();
 	}
 	
 	@Override
@@ -57,10 +62,11 @@ public class MRCubeReducer extends Reducer<Segment,
 		super.setup(context);
 		
 		Configuration conf = context.getConfiguration();
-        
+		out = new MultipleOutputs<Tuple, LongWritable>(context);
+		out1 = new MultipleOutputs<Tuple, LongWritable>(context);
 	    String[] bucsStr = conf.get("bucsStr").split("z");
 	    for(String s: bucsStr){
-	    	 bucs.add(new BUC(s, context));
+	    	 bucs.add(new BUC(s, out));
 	    }
 	    
 	    nullArray = new int[Tuple.length];
@@ -102,7 +108,7 @@ public class MRCubeReducer extends Reducer<Segment,
 			if (prevId != segment.id){
 				if (prevId != 0){
 					long_writable.set(SUM);
-					context.write(prevTuple, long_writable);	
+					out1.write("friendly", prevTuple, long_writable);	
 				}
 				
 				SUM = 0;
@@ -110,7 +116,7 @@ public class MRCubeReducer extends Reducer<Segment,
 			}else{
 				if (prevTuple.compareTo(tuple) != 0){
 					long_writable.set(SUM);
-					context.write(prevTuple, long_writable);
+					out1.write("friendly", prevTuple, long_writable);
 					SUM = 0;
 				}
 			}

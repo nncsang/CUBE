@@ -8,10 +8,12 @@ import java.util.List;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Reducer.Context;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
 import com.hadoop.cube.data_structure.Batch;
 import com.hadoop.cube.data_structure.Cuboid;
 import com.hadoop.cube.data_writable.Tuple;
+import com.hadoop.cube.settings.GlobalSettings;
 import com.hadoop.cube.utils.Utils;
 
 public class BUC {
@@ -22,6 +24,7 @@ public class BUC {
 	public static int[] nullArray;
 	public List<Cuboid> cuboids;
 	public Context context;
+	public MultipleOutputs out;
 	public LongWritable long_writable = new LongWritable(0);
 	
 	public void clear(){
@@ -52,6 +55,29 @@ public class BUC {
 	
 	public BUC(String str, Context context){
 		this.context = context;
+		tuples = new ArrayList<Tuple>();
+		prevTuple = null;
+		nullArray = new int[Tuple.length];
+		cuboids = new ArrayList<Cuboid>();
+		
+		Arrays.fill(nullArray, -1);	
+		
+		String[] parts = str.split("b");
+		String[] cuboidStrs = parts[0].split(";");
+		
+		for(String s: cuboidStrs){
+			cuboids.add(new Cuboid(s));
+		}
+		
+		String[] nums = parts[1].split(";");
+		partitionDim = new ArrayList<Integer>();
+		for(String num: nums){
+			partitionDim.add(Integer.parseInt(num));
+		}
+	}
+	
+	public BUC(String str, MultipleOutputs out){
+		this.out = out;
 		tuples = new ArrayList<Tuple>();
 		prevTuple = null;
 		nullArray = new int[Tuple.length];
@@ -234,14 +260,14 @@ public class BUC {
 			tempTuple.fields[index] = tuple.fields[index];
 		}
 		
-		if (context == null){
+		if (out == null){
 			//System.out.println(Utils.joinI(sortOrder, "") + ":\t\t" + tempTuple + "\t" + sum);
 		}
 		else{
 			long_writable.set(sum);
 			try{
 				//System.out.println(Utils.joinI(sortOrder, "") + ":\t\t" + tempTuple + "\t" + sum);
-				context.write(tempTuple, long_writable);
+				out.write("unfriendly", tempTuple, long_writable, GlobalSettings.UNFRIENDLY_OUTPUT_PATH);
 			}catch (Exception ex){
 				
 			}
