@@ -118,7 +118,7 @@ public class MRCube extends Configured implements Tool{
         aggregating_job.setJarByClass(MRCube.class);
 
         aggregating_job.waitForCompletion(true);
-		Checker.main(null);
+		//Checker.main(null);
 		return 0;
 	}
 }
