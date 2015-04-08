@@ -87,7 +87,7 @@ public class NaiveMRCube extends Configured implements Tool {
 			fs.delete(outputDir, true);
 		}
 		    
-		Job job = new Job(conf, "NaiveMRCube"); // TODO: define new job instead of null using conf
+		Job job = new Job(conf, "NaiveMRCube-" + inputFile.toString()); // TODO: define new job instead of null using conf
 		
 		// TODO: set job input format
 		job.setInputFormatClass(TextInputFormat.class);

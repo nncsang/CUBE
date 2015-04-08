@@ -71,7 +71,7 @@ public class MRCube extends Configured implements Tool{
 	
 		/** Final Aggregation Job **/
 		Configuration conf = this.getConf();
-		Job aggregating_job = new Job(conf, "FinalAggregation"); 
+		Job aggregating_job = new Job(conf, "FinalAggregation" + "-" +  inputPath.toString()); 
         
 		FileSystem fs = FileSystem.get(conf);
 		if(fs.exists(outputDir)){
@@ -150,7 +150,7 @@ class MRCubeEstimate extends Configured implements Tool{
 	@Override
 	public int run(String[] arg0) throws Exception {
 		Configuration conf = this.getConf();
-		Job estimateJob = new Job(conf, "MRCubeEstimate"); 
+		Job estimateJob = new Job(conf, "MRCubeEstimate" + "-" +  inputPath.toString()); 
 		
 		estimateJob.setInputFormatClass(TextInputFormat.class);
 		
@@ -237,7 +237,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 	public int run(String[] arg0) throws Exception {
 		
 		Configuration conf = this.getConf();
-		Job job = new Job(conf, "MRCube"); 
+		Job job = new Job(conf, "MRCube" + "-" +  inputPath.toString()); 
 		
 		// set job input format
 		job.setInputFormatClass(TextInputFormat.class);

@@ -54,7 +54,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 	@Override
 	public int run(String[] arg0) throws Exception {
 		Configuration conf = this.getConf();
-		Job job = new Job(conf, "IRG-Plus-IRG" + this.pivot); 
+		Job job = new Job(conf, "IRG-Plus-IRG-" + this.pivot + "-" +  inputPath.toString()); 
 		
 		// set job input format
 		job.setInputFormatClass(TextInputFormat.class);
