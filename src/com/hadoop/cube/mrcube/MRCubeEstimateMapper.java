@@ -33,7 +33,7 @@ public class MRCubeEstimateMapper extends Mapper<LongWritable, Text, Segment, Lo
     protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
         Configuration conf = context.getConfiguration();
-        
+        Tuple.setLength(Integer.parseInt(conf.get("length")));
 		String[] regionListString = conf.get("regionList").split(GlobalSettings.DELIM_BETWEEN_CONTENTS_OF_TUPLE);
 		RANDOM_RATE = Integer.parseInt(conf.get("RANDOM_RATE"));
 		this.regions = new ArrayList<Cuboid>();

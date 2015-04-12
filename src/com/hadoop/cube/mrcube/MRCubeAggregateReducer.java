@@ -26,6 +26,15 @@ public class MRCubeAggregateReducer extends Reducer<Tuple,
 											Tuple, 
 											LongWritable> { 
 	
+	@Override
+	protected void setup(org.apache.hadoop.mapreduce.Reducer.Context context)
+			throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		Configuration conf = context.getConfiguration();
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
+		super.setup(context);
+	}
+	
 	LongWritable long_writable = new LongWritable(0);
 	@Override
 	protected void reduce(Tuple key, Iterable<LongWritable> value, Context context)

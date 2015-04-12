@@ -37,6 +37,7 @@ public class IRGPlusIRGMapper extends Mapper<LongWritable, Text, Segment, LongWr
     protected void setup(org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Segment, LongWritable>.Context context) throws IOException, InterruptedException {
         super.setup(context);
         Configuration conf = context.getConfiguration();
+        Tuple.setLength(Integer.parseInt(conf.get("length")));
         
         this.pivot = Integer.parseInt(conf.get("hybrid.pivot", "-1"));
         this.attrPosition = new HashMap<String, Integer>();

@@ -78,6 +78,7 @@ public class IRGPlusIRGReducer extends Reducer<Segment,
 		super.setup(context);
 
 		Configuration conf = context.getConfiguration();
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
 		
         String[] regionStringList = conf.get("regionList").split(GlobalSettings.DELIM_BETWEEN_ROLLUPS);
         String[] rollupListString = conf.get("rollupList").split(GlobalSettings.DELIM_BETWEEN_ROLLUPS);

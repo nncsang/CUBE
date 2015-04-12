@@ -80,7 +80,7 @@ public class NaiveMRCube extends Configured implements Tool {
 		
 		conf.set("attributes", Utils.join(attributes, GlobalSettings.DELIM_BETWEEN_ATTRIBUTES));
 		conf.set("regionList", regionList);
-		
+		conf.set("length", Integer.toString(this.tupleLength));
 		//if file output is existed, delete it
 		FileSystem fs = FileSystem.get(conf);
 		if(fs.exists(outputDir)){
@@ -136,7 +136,7 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 	protected void setup(Context context) throws IOException, InterruptedException {
 		Configuration conf = context.getConfiguration();
 		String[] regionListString = conf.get("regionList").split(GlobalSettings.DELIM_BETWEEN_CONTENTS_OF_TUPLE);
-		
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
 		this.regions = new ArrayList<Cuboid>();
 		
 		for(int i = 0; i < regionListString.length; i++){
@@ -177,6 +177,15 @@ class NaiveMRCubeMapper extends Mapper<LongWritable, Text, Tuple, LongWritable>{
 }
 
 class NaiveMRCubeReducer extends Reducer<Tuple, LongWritable, Tuple, LongWritable>{
+	
+	@Override
+	protected void setup(org.apache.hadoop.mapreduce.Reducer.Context context)
+			throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		Configuration conf = context.getConfiguration();
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
+		super.setup(context);
+	}
 	@Override
 	protected void reduce(Tuple key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
 		long sum = 0;

@@ -39,6 +39,8 @@ public class MRCubeMapper extends Mapper<LongWritable, Text, Segment, LongWritab
         //System.out.println("MAPPER:");
         Configuration conf = context.getConfiguration();
         
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
+		
         nBatch = Integer.parseInt(conf.get("nBatch"));
         String[] strs = conf.get("unfriendlyBatches").split("=");
         

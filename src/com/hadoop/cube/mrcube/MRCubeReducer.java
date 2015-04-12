@@ -62,6 +62,9 @@ public class MRCubeReducer extends Reducer<Segment,
 		super.setup(context);
 		
 		Configuration conf = context.getConfiguration();
+		
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
+		
 		out = new MultipleOutputs<Tuple, LongWritable>(context);
 		out1 = new MultipleOutputs<Tuple, LongWritable>(context);
 	    String[] bucsStr = conf.get("bucsStr").split("z");

@@ -113,11 +113,13 @@ public class MRCube extends Configured implements Tool{
 
         // set the number of reducers using variable numberReducers
         aggregating_job.setNumReduceTasks(this.numReducers);
-
+        
+        aggregating_job.getConfiguration().set("length", Integer.toString(this.tupleLength));
         // set the jar class
         aggregating_job.setJarByClass(MRCube.class);
-
+        
         aggregating_job.waitForCompletion(true);
+        
 		//Checker.main(null);
 		return 0;
 	}
@@ -202,7 +204,7 @@ class MRCubeEstimate extends Configured implements Tool{
 		estimateJob.getConfiguration().set("attributes", Utils.join(attributes, GlobalSettings.DELIM_BETWEEN_ATTRIBUTES));
 		estimateJob.getConfiguration().set("regionList", regionList);
 		estimateJob.getConfiguration().set("RANDOM_RATE", Integer.toString(RANDOM_RATE));
-		
+		estimateJob.getConfiguration().set("length", Integer.toString(this.tupleLength));
 		estimateJob.setJarByClass(MRCubeEstimate.class);
 		estimateJob.waitForCompletion(true);
 		
@@ -428,7 +430,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 		job.getConfiguration().set("unfriendlyBatches", unfriendlyBatches);
 		job.getConfiguration().set("bucsStr", bucsStr);
 		job.getConfiguration().set("partitionOrderStr", partitionOrderStr);
-		
+		job.getConfiguration().set("length", Integer.toString(this.tupleLength));
 		job.waitForCompletion(true);
 		
 		return 0;

@@ -140,7 +140,7 @@ public class IRGPlusIRG extends Configured implements Tool{
 		job.getConfiguration().set("rollupList", rollupList);
 		job.getConfiguration().set("regionList", regionList);
 		job.getConfiguration().set("tupleList", tupleList);
-		
+		job.getConfiguration().set("length", Integer.toString(this.tupleLength));
 		job.waitForCompletion(true);
 		//Checker.main(null);
 		return 0;

@@ -23,7 +23,15 @@ import com.hadoop.cube.data_writable.Tuple;
 
 public class MRCubeAggregateMapper extends Mapper<Tuple, LongWritable, Tuple, LongWritable> { 
 	
-	
+	@Override
+	protected void setup(org.apache.hadoop.mapreduce.Mapper.Context context)
+			throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		super.setup(context);
+		
+		Configuration conf = context.getConfiguration();
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
+	}
     @Override
 	protected void map(Tuple key, LongWritable value, Context context) throws IOException, InterruptedException {	
     	context.write(key, value);

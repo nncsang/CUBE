@@ -49,6 +49,8 @@ public class MRCubeEstimateReducer extends Reducer<Segment,
 	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
+		Configuration conf = context.getConfiguration();
+		Tuple.setLength(Integer.parseInt(conf.get("length")));
 		super.setup(context);
 	}
 	
