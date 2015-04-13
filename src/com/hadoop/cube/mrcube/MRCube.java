@@ -46,8 +46,8 @@ public class MRCube extends Configured implements Tool{
 	public static void main(String args[]) throws Exception {
 		int res = 0;
 		res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
-		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
-		res = ToolRunner.run(new Configuration(), new MRCube(args), args);
+		//res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
+		//res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
 	}
 	
