@@ -46,7 +46,7 @@ public class MRCube extends Configured implements Tool{
 	public static void main(String args[]) throws Exception {
 		int res = 0;
 		res = ToolRunner.run(new Configuration(), new MRCubeEstimate(args), args);
-		//res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
+		res = ToolRunner.run(new Configuration(), new MRCubeIntermediate(args), args);
 		//res = ToolRunner.run(new Configuration(), new MRCube(args), args);
 		System.exit(res);
 	}
@@ -431,7 +431,7 @@ class MRCubeIntermediate extends Configured implements Tool{
 		job.getConfiguration().set("bucsStr", bucsStr);
 		job.getConfiguration().set("partitionOrderStr", partitionOrderStr);
 		job.getConfiguration().set("length", Integer.toString(this.tupleLength));
-		job.waitForCompletion(true);
+		//job.waitForCompletion(true);
 		
 		return 0;
 	}
