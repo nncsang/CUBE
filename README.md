@@ -1,6 +1,6 @@
 CUBE
 ====
-In this project, I proposed a new algorithm for CUBE computation in distributed systems. Instead of dividing CUBE lattice into friendly and unfriendly patches like MRCUBE, the algorithm represents CUBE lattice by ROLLUPs. This representation helps the algorithm overcome limits of MRCUBE which are not taking the advantage of sorting phase of most distributed systems (e.g. Hadoop, Spark...) and using a lot of memory in reducer phase where BUC is used. I used Map Reduce paradigm to implement and to demonstrate efficiency of the algorithm. Experiments are conducted with both synthetic and real data. Experiments show that the algorithm yields better performance and memory usage comparing with MRCUBE.
+In this project, I proposed a new algorithm for CUBE computation in distributed systems. Instead of dividing CUBE lattice into friendly and unfriendly patches like MRCUBE, the algorithm represents CUBE lattice by ROLLUPs. Then each ROLLUP is computed using IRG algorithm. This representation helps the algorithm overcome limits of MRCUBE which are not taking the advantage of sorting phase of most distributed systems (e.g. Hadoop, Spark...) and using a lot of memory in reducer phase where BUC is used. I used Map Reduce paradigm to implement and to demonstrate efficiency of the algorithm. Experiments are conducted with both synthetic and real data. Experiments show that the algorithm yields better performance and memory usage comparing with MRCUBE.
 
 Related works
 -----------------
